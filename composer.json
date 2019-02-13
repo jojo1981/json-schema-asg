@@ -1,0 +1,46 @@
+{
+  "name": "jojo1981/json-schema-asg",
+  "description": "Json schema abstract semantic graph builder",
+  "keywords": [
+    "json",
+    "schema",
+    "abstract",
+    "semantic",
+    "graph",
+    "ast",
+    "parser",
+    "resolver",
+    "builder",
+    "generator"
+
+  ],
+  "type": "library",
+  "license": "MIT",
+  "readme": "README.md",
+  "authors": [
+    {
+      "name": "Joost Nijhuis",
+      "email": "jnijhuis81@gmail.com"
+    }
+  ],
+  "prefer-stable": true,
+  "require": {
+    "php": "^7.1",
+    "ext-json": "*",
+    "league/uri-components": "^1.8",
+    "league/uri-schemes": "^1.2",
+    "symfony/yaml": "^4.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Jojo1981\\JsonSchemaAsg\\": "src/"
+    }
+  },
+  "config": {
+    "bin-dir": "bin",
+    "sort-packages": true
+  }
+}
