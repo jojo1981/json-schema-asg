@@ -51,6 +51,10 @@ class SchemaResolverFactory
     /** @var SchemaDataPreprocessorInterface */
     private $preProcessor;
 
+    /**
+     * @throws \LogicException
+     * @return SchemaResolverInterface
+     */
     public function getSchemaResolver(): SchemaResolverInterface
     {
         return new SchemaResolver(
@@ -61,31 +65,54 @@ class SchemaResolverFactory
         );
     }
 
+    /**
+     * @param SchemaStorageInterface $schemaStorage
+     * @return void
+     */
     public function setSchemaStorage(SchemaStorageInterface $schemaStorage): void
     {
         $this->schemaStorage = $schemaStorage;
     }
 
+    /**
+     * @param SchemaRetrieverInterface $schemaRetriever
+     * @return void
+     */
     public function setSchemaRetriever(SchemaRetrieverInterface $schemaRetriever): void
     {
         $this->schemaRetriever = $schemaRetriever;
     }
 
+    /**
+     * @param ReferenceResolverInterface $referenceResolver
+     * @return void
+     */
     public function setReferenceResolver(ReferenceResolverInterface $referenceResolver): void
     {
         $this->referenceResolver = $referenceResolver;
     }
 
+    /**
+     * @param ReferenceLookupTableInterface $referenceLookupTable
+     * @return void
+     */
     public function setReferenceLookupTable(ReferenceLookupTableInterface $referenceLookupTable): void
     {
         $this->referenceLookupTable = $referenceLookupTable;
     }
 
+    /**
+     * @param BuilderRegistry $builderRegistry
+     * @return void
+     */
     public function setBuilderRegistry(BuilderRegistry $builderRegistry): void
     {
         $this->builderRegistry = $builderRegistry;
     }
 
+    /**
+     * @return SchemaStorageInterface
+     */
     private function getSchemaStorage(): SchemaStorageInterface
     {
         if (!$this->schemaStorage) {
@@ -95,7 +122,10 @@ class SchemaResolverFactory
         return $this->schemaStorage;
     }
 
-    private function getSchemaFileReader(): SchemaRetrieverInterface
+    /**
+     * @return SchemaRetrieverInterface
+     */
+    public function getSchemaRetriever(): SchemaRetrieverInterface
     {
         if (!$this->schemaRetriever) {
             $this->schemaRetriever = new SchemaRetriever();
@@ -110,15 +140,21 @@ class SchemaResolverFactory
         );
     }
 
+    /**
+     * @return ReferenceResolverInterface
+     */
     public function getReferenceResolver(): ReferenceResolverInterface
     {
         if (!$this->referenceResolver) {
-            $this->referenceResolver = new ReferenceResolver($this->getSchemaFileReader());
+            $this->referenceResolver = new ReferenceResolver($this->getSchemaRetriever());
         }
 
         return $this->referenceResolver;
     }
 
+    /**
+     * @return ReferenceLookupTableInterface
+     */
     private function getReferenceLookupTable(): ReferenceLookupTableInterface
     {
         if (!$this->referenceLookupTable) {
