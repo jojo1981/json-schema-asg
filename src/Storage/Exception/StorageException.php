@@ -20,21 +20,37 @@ use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
  */
 class StorageException extends \LogicException
 {
+    /**
+     * @param UriInterface $uri
+     * @return StorageException
+     */
     public static function alreadyExistsForUriException(UriInterface $uri): StorageException
     {
         return new self(\sprintf('Already stored a schema for file: %s', (string) $uri));
     }
 
+    /**
+     * @param UriInterface $uri
+     * @return StorageException
+     */
     public static function noSchemaDataForUriExistsException(UriInterface $uri): StorageException
     {
         return new self(\sprintf('No schema data for file: %s available in the storage', (string) $uri));
     }
 
+    /**
+     * @param Reference $reference
+     * @return StorageException
+     */
     public static function alreadyExistsForSchemaReferenceException(Reference $reference): StorageException
     {
         return new self(\sprintf('Already stored a schema for reference: %s', $reference->getValue()));
     }
 
+    /**
+     * @param Reference $reference
+     * @return StorageException
+     */
     public static function noSchemaForSchemaReferenceExistsException(Reference $reference): StorageException
     {
         return new self(\sprintf('No schema with reference: %s available in the storage', $reference->getValue()));

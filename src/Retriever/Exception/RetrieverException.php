@@ -18,16 +18,31 @@ use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
  */
 class RetrieverException extends \RuntimeException
 {
+    /**
+     * @param UriInterface $uri
+     * @return RetrieverException
+     */
     public static function notExistingUri(UriInterface $uri): RetrieverException
     {
         return new static(\sprintf('Could not get data from uri: %s', (string) $uri));
     }
 
+    /**
+     * @param UriInterface $uri
+     * @param \Exception $previous
+     * @return RetrieverException
+     */
     public static function couldNotParseYamlContent(UriInterface $uri, \Exception $previous): RetrieverException
     {
         return new static(\sprintf('Could not parse yaml content for uri: %s', (string) $uri), 0, $previous);
     }
 
+    /**
+     * @param UriInterface $uri
+     * @param string $errorMessage
+     * @param int $jsonErrorCode
+     * @return RetrieverException
+     */
     public static function couldNotParseJsonContent(
         UriInterface $uri,
         string $errorMessage,

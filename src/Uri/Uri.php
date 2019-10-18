@@ -196,6 +196,6 @@ class Uri implements UriInterface
      */
     public function __toString(): string
     {
-        return (string) $this->uri->__toString();
+        return (string) $this->uri;
     }
 }

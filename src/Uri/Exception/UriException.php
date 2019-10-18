@@ -14,5 +14,4 @@ namespace Jojo1981\JsonSchemaAsg\Uri\Exception;
  */
 class UriException extends \DomainException
 {
-
 }

@@ -18,9 +18,12 @@ use League\Uri\Uri as BaseUri;
  */
 final class UriHelper
 {
+    /**
+     * private constructor to prevent getting an instance of the class
+     */
     private function __construct()
     {
-        // prevent getting an instance of the class
+        // Nothing to do here
     }
 
     /**

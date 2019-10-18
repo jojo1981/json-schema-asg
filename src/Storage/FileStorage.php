@@ -20,6 +20,12 @@ class FileStorage implements FileStorageInterface
     /** @var (bool|array|array[])[] */
     private $cache = [];
 
+    /**
+     * @param UriInterface $uri
+     * @param array|bool|array[] $schemaData
+     * @throws StorageException
+     * @return void
+     */
     public function add(UriInterface $uri, $schemaData): void
     {
         if ($this->has($uri)) {
@@ -29,11 +35,20 @@ class FileStorage implements FileStorageInterface
 
     }
 
+    /**
+     * @param UriInterface $uri
+     * @return bool
+     */
     public function has(UriInterface $uri): bool
     {
         return \array_key_exists((string) $uri, $this->cache);
     }
 
+    /**
+     * @param UriInterface $uri
+     * @throws StorageException
+     * @return array|array[]|bool|mixed
+     */
     public function get(UriInterface $uri)
     {
         if (!$this->has($uri)) {
@@ -43,6 +58,9 @@ class FileStorage implements FileStorageInterface
         return $this->cache[(string) $uri];
     }
 
+    /**
+     * @return void
+     */
     public function clear(): void
     {
         $this->cache = [];

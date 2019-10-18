@@ -17,9 +17,12 @@ namespace Jojo1981\JsonSchemaAsg\Helper;
  */
 final class ReferenceTokenParser
 {
+    /**
+     * private constructor to prevent getting an instance of the class
+     */
     private function __construct()
     {
-        // prevent getting an instance of the class
+        // Nothing to do here
     }
 
     /**

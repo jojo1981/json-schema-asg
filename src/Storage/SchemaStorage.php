@@ -21,6 +21,12 @@ class SchemaStorage implements SchemaStorageInterface
     /** @var SchemaNode[] */
     private $cache = [];
 
+    /**
+     * @param Reference $reference
+     * @param SchemaNode $schema
+     * @throws StorageException
+     * @return void
+     */
     public function add(Reference $reference, SchemaNode $schema): void
     {
         if ($this->has($reference)) {
@@ -29,11 +35,20 @@ class SchemaStorage implements SchemaStorageInterface
         $this->cache[$reference->getValue()] = $schema;
     }
 
+    /**
+     * @param Reference $reference
+     * @return bool
+     */
     public function has(Reference $reference): bool
     {
         return \array_key_exists($reference->getValue(), $this->cache);
     }
 
+    /**
+     * @param Reference $reference
+     * @throws StorageException
+     * @return SchemaNode
+     */
     public function get(Reference $reference): SchemaNode
     {
         if (!$this->has($reference)) {
@@ -43,6 +58,9 @@ class SchemaStorage implements SchemaStorageInterface
         return $this->cache[$reference->getValue()];
     }
 
+    /**
+     * @return void
+     */
     public function clear(): void
     {
         $this->cache = [];

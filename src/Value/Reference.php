@@ -83,21 +83,33 @@ class Reference
         return PathHelper::isAbsolute($this->uri->getPath());
     }
 
+    /**
+     * @return UriInterface
+     */
     public function getUri(): UriInterface
     {
         return $this->uri;
     }
 
+    /**
+     * @return JsonPointer
+     */
     public function getJsonPointer(): JsonPointer
     {
         return $this->jsonPointer;
     }
 
+    /**
+     * @return string
+     */
     public function getValue(): string
     {
         return $this->uri . ($this->jsonPointer ? self::FRAGMENT_SEPARATOR . $this->jsonPointer : '');
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->getValue();

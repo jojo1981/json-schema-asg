@@ -18,9 +18,12 @@ use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
  */
 final class ReferenceHelper
 {
+    /**
+     * private constructor to prevent getting an instance of the class
+     */
     private function __construct()
     {
-        // prevent getting an instance of this class
+        // Nothing to do here
     }
 
     /**

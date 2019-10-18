@@ -16,5 +16,4 @@ use League\Uri\UriInterface as BaseUriInterface;
  */
 interface UriInterface extends BaseUriInterface
 {
-
 }

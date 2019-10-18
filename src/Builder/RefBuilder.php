@@ -11,6 +11,7 @@ namespace Jojo1981\JsonSchemaAsg\Builder;
 
 use Jojo1981\JsonSchemaAsg\Asg\ReferenceNode;
 use Jojo1981\JsonSchemaAsg\PreProcessor\SchemaDataPreprocessor;
+use Jojo1981\JsonSchemaAsg\Storage\Exception\StorageException;
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
 
@@ -32,7 +33,7 @@ class RefBuilder extends AbstractBuilder
      * @param mixed $value
      * @param Context $context
      * @throws \InvalidArgumentException
-     * @throws \Jojo1981\JsonSchemaAsg\Storage\Exception\StorageException
+     * @throws StorageException
      * @throws \LogicException
      * @throws \UnexpectedValueException
      * @return void
