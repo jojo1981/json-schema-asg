@@ -48,7 +48,8 @@ class SchemaDataPreprocessor implements SchemaDataPreprocessorInterface
             return $schemaData;
         }
 
-        $index = $this->getIdentifierIndex($this->processRawSchemaData($schemaData));
+        $schemaData = $this->processRawSchemaData($schemaData);
+        $index = $this->getIdentifierIndex($schemaData);
 
         return $this->processRecursive((string) $uri, $schemaData, $index);
     }
