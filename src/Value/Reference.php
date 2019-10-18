@@ -76,10 +76,6 @@ class Reference
      */
     public function isAbsoluteFile(): bool
     {
-        if ('' !== $this->uri->getHost()) {
-            return false;
-        }
-
         return PathHelper::isAbsolute($this->uri->getPath());
     }
 
