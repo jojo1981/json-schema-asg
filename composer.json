@@ -12,7 +12,6 @@
     "resolver",
     "builder",
     "generator"
-
   ],
   "type": "library",
   "license": "MIT",

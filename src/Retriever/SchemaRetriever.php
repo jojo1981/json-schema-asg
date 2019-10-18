@@ -44,10 +44,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
      */
     private function getContentFromUri(UriInterface $uri)
     {
-        $content = false;
-        if (\file_exists((string)$uri)) {
-            $content = \file_get_contents((string)$uri);
-        }
+        $content = @\file_get_contents((string) $uri);
         if (false === $content) {
             throw RetrieverException::notExistingUri($uri);
         }
