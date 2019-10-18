@@ -9,6 +9,7 @@
  */
 namespace Jojo1981\JsonSchemaAsg;
 
+use Jojo1981\JsonSchemaAsg\Exception\JsonSchemaAsgException;
 use Jojo1981\JsonSchemaAsg\PreProcessor\SchemaDataPreprocessor;
 use Jojo1981\JsonSchemaAsg\PreProcessor\SchemaDataPreprocessorInterface;
 use Jojo1981\JsonSchemaAsg\Retriever\FileStorageSchemaRetrieverDecorator;
@@ -51,12 +52,95 @@ class SchemaResolverFactory
     /** @var SchemaDataPreprocessorInterface */
     private $preProcessor;
 
+    /** @var bool */
+    private $frozen = false;
+
+    /**
+     * @param FileStorageInterface $fileStorage
+     * @throws JsonSchemaAsgException
+     * @return $this
+     */
+    public function setFileStorage(FileStorageInterface $fileStorage): self
+    {
+        $this->assertNotFrozen();
+        $this->fileStorage = $fileStorage;
+
+        return $this;
+    }
+
+    /**
+     * @param SchemaStorageInterface $schemaStorage
+     * @throws JsonSchemaAsgException
+     * @return $this
+     */
+    public function setSchemaStorage(SchemaStorageInterface $schemaStorage): self
+    {
+        $this->assertNotFrozen();
+        $this->schemaStorage = $schemaStorage;
+
+        return $this;
+    }
+
+    /**
+     * @param SchemaRetrieverInterface $schemaRetriever
+     * @throws JsonSchemaAsgException
+     * @return $this
+     */
+    public function setSchemaRetriever(SchemaRetrieverInterface $schemaRetriever): self
+    {
+        $this->assertNotFrozen();
+        $this->schemaRetriever = $schemaRetriever;
+
+        return $this;
+    }
+
+    /**
+     * @param ReferenceResolverInterface $referenceResolver
+     * @throws JsonSchemaAsgException
+     * @return $this
+     */
+    public function setReferenceResolver(ReferenceResolverInterface $referenceResolver): self
+    {
+        $this->assertNotFrozen();
+        $this->referenceResolver = $referenceResolver;
+
+        return $this;
+    }
+
+    /**
+     * @param ReferenceLookupTableInterface $referenceLookupTable
+     * @throws JsonSchemaAsgException
+     * @return $this
+     */
+    public function setReferenceLookupTable(ReferenceLookupTableInterface $referenceLookupTable): self
+    {
+        $this->assertNotFrozen();
+        $this->referenceLookupTable = $referenceLookupTable;
+
+        return $this;
+    }
+
+    /**
+     * @param BuilderRegistry $builderRegistry
+     * @throws JsonSchemaAsgException
+     * @return $this
+     */
+    public function setBuilderRegistry(BuilderRegistry $builderRegistry): self
+    {
+        $this->assertNotFrozen();
+        $this->builderRegistry = $builderRegistry;
+
+        return $this;
+    }
+
     /**
      * @throws \LogicException
      * @return SchemaResolverInterface
      */
     public function getSchemaResolver(): SchemaResolverInterface
     {
+        $this->frozen = true;
+
         return new SchemaResolver(
             $this->getSchemaStorage(),
             $this->getReferenceResolver(),
@@ -66,60 +150,17 @@ class SchemaResolverFactory
     }
 
     /**
-     * @param SchemaStorageInterface $schemaStorage
-     * @return void
+     * @return ReferenceResolverInterface
      */
-    public function setSchemaStorage(SchemaStorageInterface $schemaStorage): void
+    public function getReferenceResolver(): ReferenceResolverInterface
     {
-        $this->schemaStorage = $schemaStorage;
-    }
+        $this->frozen = true;
 
-    /**
-     * @param SchemaRetrieverInterface $schemaRetriever
-     * @return void
-     */
-    public function setSchemaRetriever(SchemaRetrieverInterface $schemaRetriever): void
-    {
-        $this->schemaRetriever = $schemaRetriever;
-    }
-
-    /**
-     * @param ReferenceResolverInterface $referenceResolver
-     * @return void
-     */
-    public function setReferenceResolver(ReferenceResolverInterface $referenceResolver): void
-    {
-        $this->referenceResolver = $referenceResolver;
-    }
-
-    /**
-     * @param ReferenceLookupTableInterface $referenceLookupTable
-     * @return void
-     */
-    public function setReferenceLookupTable(ReferenceLookupTableInterface $referenceLookupTable): void
-    {
-        $this->referenceLookupTable = $referenceLookupTable;
-    }
-
-    /**
-     * @param BuilderRegistry $builderRegistry
-     * @return void
-     */
-    public function setBuilderRegistry(BuilderRegistry $builderRegistry): void
-    {
-        $this->builderRegistry = $builderRegistry;
-    }
-
-    /**
-     * @return SchemaStorageInterface
-     */
-    private function getSchemaStorage(): SchemaStorageInterface
-    {
-        if (!$this->schemaStorage) {
-            $this->schemaStorage = new SchemaStorage();
+        if (!$this->referenceResolver) {
+            $this->referenceResolver = new ReferenceResolver($this->getSchemaRetriever());
         }
 
-        return $this->schemaStorage;
+        return $this->referenceResolver;
     }
 
     /**
@@ -127,6 +168,8 @@ class SchemaResolverFactory
      */
     public function getSchemaRetriever(): SchemaRetrieverInterface
     {
+        $this->frozen = true;
+
         if (!$this->schemaRetriever) {
             $this->schemaRetriever = new SchemaRetriever();
         }
@@ -141,15 +184,15 @@ class SchemaResolverFactory
     }
 
     /**
-     * @return ReferenceResolverInterface
+     * @return SchemaStorageInterface
      */
-    public function getReferenceResolver(): ReferenceResolverInterface
+    private function getSchemaStorage(): SchemaStorageInterface
     {
-        if (!$this->referenceResolver) {
-            $this->referenceResolver = new ReferenceResolver($this->getSchemaRetriever());
+        if (!$this->schemaStorage) {
+            $this->schemaStorage = new SchemaStorage();
         }
 
-        return $this->referenceResolver;
+        return $this->schemaStorage;
     }
 
     /**
@@ -199,5 +242,19 @@ class SchemaResolverFactory
         }
 
         return $this->preProcessor;
+    }
+
+    /**
+     * @throws JsonSchemaAsgException
+     * @return void
+     */
+    private function assertNotFrozen(): void
+    {
+        if ($this->frozen) {
+            throw new JsonSchemaAsgException(
+                'SchemaResolverFactory is frozen. So no setter methods can be called anymore. ' .
+                'The factory will be frozen after one of the getter methods has been called.'
+            );
+        }
     }
 }
