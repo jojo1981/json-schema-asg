@@ -160,7 +160,7 @@ class SimpleTypeNode implements NodeInterface, VisitableInterface
             throw new \InvalidArgumentException(\sprintf(
                 'Invalid type: %s given. Valid types are: [%s]',
                 $type,
-                self::getValidTypes()
+                \implode(',', self::getValidTypes())
             ));
         }
     }
