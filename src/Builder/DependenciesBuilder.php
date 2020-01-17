@@ -10,6 +10,7 @@
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
 use Jojo1981\JsonSchemaAsg\Asg\DependenciesNode;
+use Jojo1981\JsonSchemaAsg\Asg\DependencyNode;
 use Jojo1981\JsonSchemaAsg\Helper\ArrayHelper;
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
 
@@ -35,31 +36,39 @@ class DependenciesBuilder extends AbstractBuilder
      */
     protected function buildNode(string $key, $value, Context $context): void
     {
-        $this->assertIsSequenceOfStringValuesOrAssociativeArray($value);
+        if (!empty($value) && !ArrayHelper::isAssociativeArray($value)) {
+            throw new \LogicException('Expected ' . JsonKeys::KEY_DEPENDENCIES . ' to have an object as value');
+        }
 
         $dependenciesNode = new DependenciesNode($context->getParentSchemaNode());
-        if (ArrayHelper::isSequenceArray($value)) {
-            $dependenciesNode->setSequenceOfString($value);
-        } else {
-            $schemaNode = $context->resolveSchemaDataRecursively($value, $context->getParentReference());
-            $dependenciesNode->setSchema($schemaNode);
+        foreach ($value as $propertyName => $schemaData) {
+            $this->assertIsSequenceOfStringValuesOrAssociativeArray($propertyName, $schemaData);
+            $dependencyNode = new DependencyNode($dependenciesNode, $propertyName);
+            if (ArrayHelper::isSequenceArray($schemaData)) {
+                $dependencyNode->setSequenceOfString($schemaData);
+            } else {
+                $schemaNode = $context->resolveSchemaDataRecursively($schemaData, $context->getParentReference());
+                $dependencyNode->setSchema($schemaNode);
+            }
+            $dependenciesNode->addDependencyNode($dependencyNode);
         }
         $context->getParentSchemaNode()->setDependencies($dependenciesNode);
     }
 
     /**
-     * @param array $value
+     * @param string $propertyName
+     * @param mixed $value
      * @throws \LogicException
      * @return void
      */
-    private function assertIsSequenceOfStringValuesOrAssociativeArray($value): void
+    private function assertIsSequenceOfStringValuesOrAssociativeArray(string $propertyName, $value): void
     {
         if (!ArrayHelper::isSequenceArray($value) && !ArrayHelper::isAssociativeArray($value)) {
-            throw new \LogicException('Expected ' . JsonKeys::KEY_DEPENDENCIES . ' to have an schema object or a sequence of strings as value');
+            throw new \LogicException('Expected ' . JsonKeys::KEY_DEPENDENCIES . ' for property: ' . $propertyName . 'to have an schema object or a sequence of strings as value');
         }
 
         if (ArrayHelper::isSequenceArray($value) && !ArrayHelper::areAllArrayElementsOfType($value, 'string')) {
-            throw new \LogicException('Expected ' . JsonKeys::KEY_DEPENDENCIES . ' to have an object or sequence of strings as value');
+            throw new \LogicException('Expected ' . JsonKeys::KEY_DEPENDENCIES . ' for property: ' . $propertyName . 'to have an object or sequence of strings as value');
         }
     }
 }

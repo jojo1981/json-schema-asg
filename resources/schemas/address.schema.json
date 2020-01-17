@@ -38,5 +38,8 @@
     "extended-address": [
       "street-address"
     ]
+  },
+  "custom-property": {
+    "name": "custom"
   }
 }

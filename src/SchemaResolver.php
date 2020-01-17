@@ -149,8 +149,8 @@ class SchemaResolver implements SchemaResolverInterface
     private function resolveSchemaData(ObjectSchemaNode $schemaNode, Reference $reference, array $schemaData): void
     {
         foreach ($schemaData as $key => $value) {
-            $currentReference = ReferenceHelper::createFromReferenceByAppendingKey($reference, $key);
-            if (\in_array($key, $this->builder->getAcceptedKeys(), true)) {
+            if ($this->builder->acceptKey($key)) {
+                $currentReference = ReferenceHelper::createFromReferenceByAppendingKey($reference, $key);
                 $this->builder->build($key, $value, $this->buildContext($currentReference, $schemaNode));
             }
         }

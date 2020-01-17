@@ -114,6 +114,16 @@ class BuilderRegistry implements BuilderInterface
 
     /**
      * @param string $key
+     * @return bool
+     */
+    public function acceptKey(string $key): bool
+    {
+        return \in_array($key, $this->getAcceptedKeys(), true)
+            || \in_array(self::WILDCARD_SYMBOL, $this->getAcceptedKeys(), true);
+    }
+
+    /**
+     * @param string $key
      * @param mixed $value
      * @param Context $context
      * @throws BuilderException
@@ -121,15 +131,16 @@ class BuilderRegistry implements BuilderInterface
      */
     public function build(string $key, $value, Context $context): void
     {
-        if (!\array_key_exists($key, $this->builders) && !\array_key_exists(self::WILDCARD_SYMBOL, $this->builders)) {
-            throw BuilderException::unjustifiedCallingBuilder();
-        }
-
         if (\array_key_exists($key, $this->builders)) {
             $this->builders[$key]->build($key, $value, $context);
-        } else {
-            $this->builders[self::WILDCARD_SYMBOL]->build($key, $value, $context);
+            return;
         }
+        if (\array_key_exists(self::WILDCARD_SYMBOL, $this->builders)) {
+            $this->builders[self::WILDCARD_SYMBOL]->build($key, $value, $context);
+            return;
+        }
+
+        throw BuilderException::unjustifiedCallingBuilder();
     }
 
     /**

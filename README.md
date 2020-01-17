@@ -72,6 +72,7 @@ $schemaFilenames = [
     'resources/schemas/address.schema.json',
     'resources/schemas/calendar.schema.json',
     'resources/schemas/card.schema.json',
+    'resources/schemas/customer.schema.json',
     'resources/schemas/geographical-location.schema.json'
 ];
 
@@ -83,10 +84,11 @@ foreach ($schemaFilenames as $relativeSchemaFilename) {
 
 // Example urls
 $schemaUrls = [
-  'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/address.schema.json',
-  'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/calendar.schema.json',
-  'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/card.schema.json',
-  'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/geographical-location.schema.json'
+    'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/address.schema.json',
+    'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/calendar.schema.json',
+    'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/card.schema.json',
+    'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/customer.schema.json',
+    'https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/geographical-location.schema.json'
 ];
 
 foreach ($schemaUrls as $schemaUrl) {

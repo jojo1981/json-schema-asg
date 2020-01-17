@@ -1,0 +1,33 @@
+{
+  "$id": "https://raw.githubusercontent.com/jojo1981/json-schema-asg/master/resources/schemas/customer.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Customer",
+  "description": "A schema representing a customer.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "credit_card": {
+      "type": "number"
+    },
+    "billing_address": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "dependencies": {
+    "credit_card": {
+      "properties": {
+        "billing_address": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "billing_address"
+      ]
+    }
+  }
+}

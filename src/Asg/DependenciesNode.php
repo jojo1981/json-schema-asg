@@ -20,11 +20,8 @@ class DependenciesNode implements NodeInterface, VisitableInterface
     /** @var ObjectSchemaNode */
     private $parent;
 
-    /** @var null|SchemaNode */
-    private $schema;
-
-    /** @var null|string[] */
-    private $sequenceOfString;
+    /** @var DependenciesNode[] */
+    private $dependencyNodes = [];
 
     /**
      * @param ObjectSchemaNode $parent
@@ -52,37 +49,30 @@ class DependenciesNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @return SchemaNode|null
+     * @return DependencyNode[]
      */
-    public function getSchema(): ?SchemaNode
+    public function getDependencyNodes(): array
     {
-        return $this->schema;
+        return $this->dependencyNodes;
     }
 
     /**
-     * @param SchemaNode|null $schema
+     * @param DependencyNode[] $dependencyNodes
      * @return void
      */
-    public function setSchema(?SchemaNode $schema): void
+    public function setDefinitionNodes(array $dependencyNodes): void
     {
-        $this->schema = $schema;
+        $this->dependencyNodes = [];
+        \array_walk($dependencyNodes, [$this, 'addDependencyNode']);
     }
 
     /**
-     * @return null|string[]
-     */
-    public function getSequenceOfString(): ?array
-    {
-        return $this->sequenceOfString;
-    }
-
-    /**
-     * @param null|string[] $sequenceOfString
+     * @param DependencyNode $dependencyNode
      * @return void
      */
-    public function setSequenceOfString(?array $sequenceOfString): void
+    public function addDependencyNode(DependencyNode $dependencyNode): void
     {
-        $this->sequenceOfString = $sequenceOfString;
+        $this->dependencyNodes[] = $dependencyNode;
     }
 
     /**

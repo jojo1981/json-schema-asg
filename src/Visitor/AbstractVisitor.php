@@ -13,6 +13,7 @@ use Jojo1981\JsonSchemaAsg\Asg\BooleanSchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\DefinitionNode;
 use Jojo1981\JsonSchemaAsg\Asg\DefinitionsNode;
 use Jojo1981\JsonSchemaAsg\Asg\DependenciesNode;
+use Jojo1981\JsonSchemaAsg\Asg\DependencyNode;
 use Jojo1981\JsonSchemaAsg\Asg\EmptySchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\EnumNode;
 use Jojo1981\JsonSchemaAsg\Asg\ItemsNode;
@@ -68,6 +69,15 @@ class AbstractVisitor implements VisitorInterface
      * @return mixed
      */
     public function visitDependenciesNode(DependenciesNode $dependenciesNode)
+    {
+        // nothing to do here, because of the Null object pattern.
+    }
+
+    /**
+     * @param DependencyNode $dependencyNode
+     * @return mixed
+     */
+    public function visitDependencyNode(DependencyNode $dependencyNode)
     {
         // nothing to do here, because of the Null object pattern.
     }

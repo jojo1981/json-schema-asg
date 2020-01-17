@@ -26,6 +26,15 @@ class ExtraDataBuilder implements BuilderInterface
 
     /**
      * @param string $key
+     * @return bool
+     */
+    public function acceptKey(string $key): bool
+    {
+        return true;
+    }
+
+    /**
+     * @param string $key
      * @param mixed $value
      * @param Context $context
      * @return void

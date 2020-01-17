@@ -28,6 +28,14 @@ interface BuilderInterface
     public function getAcceptedKeys(): array;
 
     /**
+     * Return true when the builder supports the key
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function acceptKey(string $key): bool;
+
+    /**
      * This method will be called when the builder has accepted the key and should validate and build the correct
      * node and attach it to the $parentSchemaNode
      *

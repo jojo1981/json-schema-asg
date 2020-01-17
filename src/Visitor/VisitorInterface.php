@@ -13,6 +13,7 @@ use Jojo1981\JsonSchemaAsg\Asg\BooleanSchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\DefinitionNode;
 use Jojo1981\JsonSchemaAsg\Asg\DefinitionsNode;
 use Jojo1981\JsonSchemaAsg\Asg\DependenciesNode;
+use Jojo1981\JsonSchemaAsg\Asg\DependencyNode;
 use Jojo1981\JsonSchemaAsg\Asg\EmptySchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\EnumNode;
 use Jojo1981\JsonSchemaAsg\Asg\ItemsNode;
@@ -58,6 +59,12 @@ interface VisitorInterface
      * @return mixed
      */
     public function visitDependenciesNode(DependenciesNode $dependenciesNode);
+
+    /**
+     * @param DependencyNode $dependencyNode
+     * @return mixed
+     */
+    public function visitDependencyNode(DependencyNode $dependencyNode);
 
     /**
      * @param EmptySchemaNode $emptySchemaNode

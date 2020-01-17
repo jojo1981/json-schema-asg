@@ -20,6 +20,15 @@ abstract class AbstractBuilder implements BuilderInterface
 {
     /**
      * @param string $key
+     * @return bool
+     */
+    final public function acceptKey(string $key): bool
+    {
+        return \in_array($key, $this->getAcceptedKeys(), true);
+    }
+
+    /**
+     * @param string $key
      * @param mixed $value
      * @param Context $context
      * @throws BuilderException
