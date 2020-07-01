@@ -43,7 +43,14 @@ class Reference
                 $this->jsonPointer = new JsonPointer($parts[1]);
             }
         } catch (\Exception $exception) {
-            throw new \UnexpectedValueException(\sprintf('Invalid json reference with value: `%s` passed', $value));
+            throw new \UnexpectedValueException(
+                \implode(
+                    PHP_EOL,
+                    [\sprintf('Invalid json reference with value: `%s` passed.', $value), $exception->getMessage()]
+                ),
+                0,
+                $exception
+            );
         }
     }
 

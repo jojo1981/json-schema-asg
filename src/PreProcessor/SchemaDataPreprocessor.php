@@ -83,7 +83,11 @@ class SchemaDataPreprocessor implements SchemaDataPreprocessorInterface
                 if (!\is_string($value)) {
                     throw PreProcessException::invalidRefValueTypeFound();
                 }
-                $reference = $this->getReferenceFromIndexAndRefValue($index, $value);
+                try {
+                    $reference = $this->getReferenceFromIndexAndRefValue($index, $value);
+                } catch (\UnexpectedValueException $exception) {
+                    throw PreProcessException::invalidRefValueFound($id, $value, $exception);
+                }
                 $rewrittenReference = $this->rewriteReferenceWhenNeeded($reference, $id);
 
                 $value = [

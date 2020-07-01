@@ -66,7 +66,7 @@ class JsonPointer
     private function assertValue(string $value): void
     {
         if (0 !== \strpos($value, '/')) {
-            throw new \UnexpectedValueException(\sprintf('Invalid json pointer with value: `%s` passed', $value));
+            throw new \UnexpectedValueException(\sprintf('Invalid json pointer with value: `%s` passed.', $value));
         }
     }
 

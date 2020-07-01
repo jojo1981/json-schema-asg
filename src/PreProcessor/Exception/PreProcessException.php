@@ -35,6 +35,26 @@ class PreProcessException extends \RuntimeException
     }
 
     /**
+     * @param string $filename
+     * @param string $referenceValue
+     * @param null|\Exception $previous
+     * @return PreProcessException
+     */
+    public static function invalidRefValueFound(
+        string $filename,
+        string $referenceValue,
+        ?\Exception $previous = null
+    ): PreProcessException
+    {
+        $message = \sprintf('Invalid reference value: `%s` of `$ref` in file: `%s`.', $referenceValue, $filename);
+        if (null !== $previous) {
+            $message .= PHP_EOL . $previous->getMessage();
+        }
+
+        return new static($message, 0, $previous);
+    }
+
+    /**
      * @param string $typeFound
      * @return PreProcessException
      */
