@@ -34,12 +34,16 @@ class Reference
     public function __construct(string $value)
     {
         $parts = \explode(self::FRAGMENT_SEPARATOR, $value);
-        if (\count($parts) === 1) {
-            $this->uri = UriHelper::createFromString($parts[0]);
-            $this->jsonPointer = new JsonPointer('/');
-        } elseif (\count($parts) === 2) {
-            $this->uri = UriHelper::createFromString($parts[0]);
-            $this->jsonPointer = new JsonPointer($parts[1]);
+        try {
+            if (\count($parts) === 1) {
+                $this->uri = UriHelper::createFromString($parts[0]);
+                $this->jsonPointer = new JsonPointer('/');
+            } elseif (\count($parts) === 2) {
+                $this->uri = UriHelper::createFromString($parts[0]);
+                $this->jsonPointer = new JsonPointer($parts[1]);
+            }
+        } catch (\Exception $exception) {
+            throw new \UnexpectedValueException(\sprintf('Invalid json reference with value: `%s` passed', $value));
         }
     }
 
