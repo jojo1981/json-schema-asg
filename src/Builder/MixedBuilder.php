@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
@@ -30,12 +32,11 @@ class MixedBuilder extends AbstractBuilder
      * @param Context $context
      * @return void
      */
-    protected function buildNode(string $key, $value, Context $context): void
+    protected function buildNode(string $key, mixed $value, Context $context): void
     {
         if (JsonKeys::KEY_CONST === $key) {
             $context->getParentSchemaNode()->setConst($value);
         }
-
         if (JsonKeys::KEY_DEFAULT === $key) {
             $context->getParentSchemaNode()->setDefault($value);
         }

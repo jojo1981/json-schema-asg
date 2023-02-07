@@ -7,45 +7,28 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
 use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
+use function array_walk;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Ast
  */
 class ItemsNode implements NodeInterface, VisitableInterface
 {
-    /** @var ObjectSchemaNode */
-    private $parent;
-
     /** @var SchemaNode[] */
-    private $schemas = [];
+    private array $schemas = [];
 
     /**
-     * @param ObjectSchemaNode $parent
+     * @param SchemaNode[] $schemas
      */
-    public function __construct(ObjectSchemaNode $parent)
+    public function __construct(array $schemas)
     {
-        $this->parent = $parent;
-    }
-
-    /**
-     * @return ObjectSchemaNode
-     */
-    public function getParent(): ObjectSchemaNode
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param ObjectSchemaNode $parent
-     * @return void
-     */
-    public function setParent(ObjectSchemaNode $parent): void
-    {
-        $this->parent = $parent;
+        $this->setSchemas($schemas);
     }
 
     /**
@@ -57,30 +40,30 @@ class ItemsNode implements NodeInterface, VisitableInterface
     }
 
     /**
+     * @param VisitorInterface $visitor
+     * @return mixed
+     */
+    public function accept(VisitorInterface $visitor): mixed
+    {
+        return $visitor->visitItemsNode($this);
+    }
+
+    /**
      * @param SchemaNode[] $schemas
      * @return void
      */
-    public function setSchemas(array $schemas): void
+    private function setSchemas(array $schemas): void
     {
         $this->schemas = [];
-        \array_walk($schemas, [$this, 'addSchema']);
+        array_walk($schemas, [$this, 'addSchema']);
     }
 
     /**
      * @param SchemaNode $schemaNode
      * @return void
      */
-    public function addSchema(SchemaNode $schemaNode): void
+    private function addSchema(SchemaNode $schemaNode): void
     {
         $this->schemas[] = $schemaNode;
-    }
-
-    /**
-     * @param VisitorInterface $visitor
-     * @return mixed
-     */
-    public function accept(VisitorInterface $visitor)
-    {
-        return $visitor->visitItemsNode($this);
     }
 }

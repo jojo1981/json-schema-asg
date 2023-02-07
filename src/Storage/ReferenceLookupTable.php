@@ -7,10 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Storage;
 
+use InvalidArgumentException;
 use Jojo1981\JsonSchemaAsg\Helper\ReferenceHelper;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
+use LogicException;
+use function array_pop;
+use function count;
+use function end;
+use function str_starts_with;
 
 /**
  * This class is responsible for holding a stack with reference and can be used to check if a reference is a circular
@@ -22,19 +30,19 @@ use Jojo1981\JsonSchemaAsg\Value\Reference;
 class ReferenceLookupTable implements ReferenceLookupTableInterface
 {
     /** @var Reference[] */
-    private $stack = [];
+    private array $stack = [];
 
     /**
      * @return Reference|null
      */
     public function peek(): ?Reference
     {
-        return \count($this->stack) ? \end($this->stack) : null;
+        return count($this->stack) ? end($this->stack) : null;
     }
 
     /**
      * @param Reference $reference
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return void
      */
     public function push(Reference $reference): void
@@ -45,16 +53,16 @@ class ReferenceLookupTable implements ReferenceLookupTableInterface
     }
 
     /**
-     * @throws \LogicException
+     * @throws LogicException
      * @return Reference
      */
     public function pop(): Reference
     {
-        if (!\count($this->stack)) {
-            throw new \LogicException('Can not pop a json reference from an empty stack');
+        if (!count($this->stack)) {
+            throw new LogicException('Can not pop a json reference from an empty stack');
         }
 
-        return \array_pop($this->stack);
+        return array_pop($this->stack);
     }
 
     /**
@@ -86,12 +94,12 @@ class ReferenceLookupTable implements ReferenceLookupTableInterface
      */
     public function getSize(): int
     {
-        return \count($this->stack);
+        return count($this->stack);
     }
 
     /**
      * @param Reference $reference
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return bool
      */
     public function isCircularReference(Reference $reference): bool
@@ -99,7 +107,7 @@ class ReferenceLookupTable implements ReferenceLookupTableInterface
         ReferenceHelper::assertReferenceNotLocalAndNotRelative($reference);
 
         foreach ($this->stack as $currentReference) {
-            if (0 === \strpos($currentReference->getValue(), $reference->getValue())) {
+            if (str_starts_with($currentReference->getValue(), $reference->getValue())) {
                 return true;
             }
         }

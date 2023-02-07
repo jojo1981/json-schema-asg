@@ -7,16 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Retriever;
 
 use Jojo1981\JsonSchemaAsg\PreProcessor\Exception\PreProcessException;
 use Jojo1981\JsonSchemaAsg\PreProcessor\SchemaDataPreprocessorInterface;
+use Jojo1981\JsonSchemaAsg\Retriever\Exception\RetrieverException;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
 
 /**
- * This decorator is responsible for pre-processing the retrieved data from the schema retriever using a pre processor.
+ * This decorator is responsible for pre-processing the retrieved data from the schema retriever using a pre-processor.
  * When using this decorator in combination with the file storage schema retriever decorator this decorator should be
- * used first and than the other should be wrapped around this decorator. So the processed schema data will be cached and
+ * used first and then the other should be wrapped around this decorator. So the processed schema data will be cached and
  * not the raw data.
  *
  * @package Jojo1981\JsonSchemaAsg\Retriever
@@ -24,10 +27,10 @@ use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
 class PreProcessSchemaRetrieverDecorator implements SchemaRetrieverInterface
 {
     /** @var SchemaRetrieverInterface */
-    private $schemaRetriever;
+    private SchemaRetrieverInterface $schemaRetriever;
 
     /** @var SchemaDataPreprocessorInterface */
-    private $schemaDataPreprocessor;
+    private SchemaDataPreprocessorInterface $schemaDataPreprocessor;
 
     /**
      * @param SchemaRetrieverInterface $schemaRetriever
@@ -43,11 +46,11 @@ class PreProcessSchemaRetrieverDecorator implements SchemaRetrieverInterface
 
     /**
      * @param UriInterface $uri
-     * @throws Exception\RetrieverException
+     * @throws RetrieverException
      * @throws PreProcessException
      * @return bool|array|array[]
      */
-    public function readSchemaDataFromUri(UriInterface $uri)
+    public function readSchemaDataFromUri(UriInterface $uri): array|bool
     {
         return $this->schemaDataPreprocessor->preProcess($uri, $this->schemaRetriever->readSchemaDataFromUri($uri));
     }

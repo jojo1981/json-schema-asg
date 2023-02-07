@@ -9,13 +9,13 @@
  */
 declare(strict_types=1);
 
-namespace Jojo1981\JsonSchemaAsg\Uri\Exception;
+namespace Jojo1981\JsonSchemaAsg\Uri;
 
-use DomainException;
+use League\Uri\Contracts\PathInterface as BasePathInterface;
 
 /**
- * @package Jojo1981\JsonSchemaAsg\Uri\Exception
+ * @package Jojo1981\JsonSchemaAsg\Uri
  */
-final class UriException extends DomainException
+interface PathInterface extends BasePathInterface
 {
 }

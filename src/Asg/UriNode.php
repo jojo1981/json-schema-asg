@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
@@ -17,37 +19,15 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
  */
 class UriNode implements NodeInterface, VisitableInterface
 {
-    /** @var ObjectSchemaNode */
-    private $parent;
-
     /** @var string */
-    private $value;
+    private string $value;
 
     /**
-     * @param ObjectSchemaNode $parent
      * @param string $value
      */
-    public function __construct(ObjectSchemaNode $parent, string $value)
+    public function __construct(string $value)
     {
-        $this->parent = $parent;
         $this->value = $value;
-    }
-
-    /**
-     * @return ObjectSchemaNode
-     */
-    public function getParent(): ObjectSchemaNode
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param ObjectSchemaNode $parent
-     * @return void
-     */
-    public function setParent(ObjectSchemaNode $parent): void
-    {
-        $this->parent = $parent;
     }
 
     /**
@@ -59,19 +39,10 @@ class UriNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param string $value
-     * @return void
-     */
-    public function setValue(string $value): void
-    {
-        $this->value = $value;
-    }
-
-    /**
      * @param VisitorInterface $visitor
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor)
+    public function accept(VisitorInterface $visitor): mixed
     {
         return $visitor->visitUriNode($this);
     }

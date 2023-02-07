@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
@@ -17,145 +19,145 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
 class ObjectSchemaNode extends SchemaNode
 {
     /** @var null|ReferenceNode */
-    private $reference;
+    private ?ReferenceNode $reference = null;
 
     /** @var null|UriNode */
-    private $id;
+    private ?UriNode $id = null;
 
     /** @var null|UriNode */
-    private $schema;
+    private ?UriNode $schema = null;
 
     /** @var null|string */
-    private $comment;
+    private ?string $comment = null;
 
     /** @var null|string */
-    private $version;
+    private ?string $version = null;
 
     /** @var null|string */
-    private $title;
+    private ?string $title = null;
 
     /** @var null|string */
-    private $description;
+    private ?string $description = null;
 
     /** @var null|string */
-    private $pattern;
+    private ?string $pattern = null;
 
     /** @var null|string */
-    private $format;
+    private ?string $format = null;
 
     /** @var null|string */
-    private $contentMediaType;
+    private ?string $contentMediaType = null;
 
     /** @var null|string */
-    private $contentEncoding;
+    private ?string $contentEncoding = null;
 
     /** @var null|SimpleTypesSequenceNode */
-    private $type;
+    private ?SimpleTypesSequenceNode $type = null;
 
     /** @var null|RequiredNode */
-    private $required;
+    private ?RequiredNode $required = null;
 
     /** @var null|PropertiesNode */
-    private $properties;
+    private ?PropertiesNode $properties = null;
 
     /** @var null|PatternPropertiesNode */
-    private $patternProperties;
+    private ?PatternPropertiesNode $patternProperties = null;
 
     /** @var null|DefinitionsNode */
-    private $definitions;
+    private ?DefinitionsNode $definitions = null;
 
     /** @var null|float */
-    private $multipleOf;
+    private ?float $multipleOf = null;
 
     /** @var null|ItemsNode */
-    private $items;
+    private ?ItemsNode $items = null;
 
     /** @var null|EnumNode */
-    private $enum;
+    private ?EnumNode $enum = null;
 
     /** @var null|bool */
-    private $readOnly;
+    private ?bool $readOnly = null;
 
     /** @var null|int */
-    private $maxLength;
+    private ?int $maxLength = null;
 
     /** @var null|int */
-    private $minLength;
+    private ?int $minLength = null;
 
     /** @var null|int */
-    private $maxItems;
+    private ?int $maxItems = null;
 
     /** @var null|int */
-    private $minItems;
+    private ?int $minItems = null;
 
     /** @var null|int */
-    private $maxProperties;
+    private ?int $maxProperties = null;
 
     /** @var null|int */
-    private $minProperties;
+    private ?int $minProperties = null;
 
     /** @var null|bool */
-    private $uniqueItems;
+    private ?bool $uniqueItems = null;
 
     /** @var null|float */
-    private $maximum;
+    private ?float $maximum = null;
 
     /** @var null|float */
-    private $exclusiveMaximum;
+    private ?float $exclusiveMaximum = null;
 
     /** @var null|float */
-    private $minimum;
+    private ?float $minimum = null;
 
     /** @var null|float */
-    private $exclusiveMinimum;
+    private ?float $exclusiveMinimum = null;
 
     /** @var null|SchemaNode */
-    private $additionalItems;
+    private ?SchemaNode $additionalItems = null;
 
     /** @var null|SchemaNode */
-    private $contains;
+    private ?SchemaNode $contains = null;
 
     /** @var null|SchemaNode */
-    private $additionalProperties;
+    private ?SchemaNode $additionalProperties = null;
 
     /** @var null|SchemaNode */
-    private $propertyNames;
+    private ?SchemaNode $propertyNames = null;
 
     /** @var null|SchemaNode */
-    private $if;
+    private ?SchemaNode $if = null;
 
     /** @var null|SchemaNode */
-    private $then;
+    private ?SchemaNode $then = null;
 
     /** @var null|SchemaNode */
-    private $else;
+    private ?SchemaNode $else = null;
 
     /** @var null|SchemaNode */
-    private $not;
+    private ?SchemaNode $not = null;
 
     /** @var null|SequenceOfSchemaNodesNode */
-    private $allOf;
+    private ?SequenceOfSchemaNodesNode $allOf = null;
 
     /** @var null|SequenceOfSchemaNodesNode */
-    private $anyOf;
+    private ?SequenceOfSchemaNodesNode $anyOf = null;
 
     /** @var null|SequenceOfSchemaNodesNode */
-    private $oneOf;
+    private ?SequenceOfSchemaNodesNode $oneOf = null;
 
-    /** @var null|mixed[] */
-    private $examples;
+    /** @var null|array */
+    private ?array $examples = null;
 
     /** @var null|DependenciesNode */
-    private $dependencies;
+    private ?DependenciesNode $dependencies = null;
 
-    /** @var null|mixed[] */
-    private $extraData;
-
-    /** @var mixed */
-    private $const;
+    /** @var null|array */
+    private ?array $extraData = null;
 
     /** @var mixed */
-    private $default;
+    private mixed $const = null;
+
+    /** @var mixed */
+    private mixed $default = null;
 
     /**
      * @return null|ReferenceNode
@@ -872,7 +874,7 @@ class ObjectSchemaNode extends SchemaNode
     }
 
     /**
-     * @return null|mixed[]
+     * @return null|array
      */
     public function getExamples(): ?array
     {
@@ -880,7 +882,7 @@ class ObjectSchemaNode extends SchemaNode
     }
 
     /**
-     * @param mixed[] $examples
+     * @param array $examples
      * @return void
      */
     public function setExamples(array $examples): void
@@ -906,7 +908,7 @@ class ObjectSchemaNode extends SchemaNode
     }
 
     /**
-     * @return null|mixed[]
+     * @return null|array
      */
     public function getExtraData(): ?array
     {
@@ -918,7 +920,7 @@ class ObjectSchemaNode extends SchemaNode
      * @param mixed $value
      * @return void
      */
-    public function addExtraData(string $key, $value): void
+    public function addExtraData(string $key, mixed $value): void
     {
         if (null === $this->extraData) {
             $this->extraData = [];
@@ -930,7 +932,7 @@ class ObjectSchemaNode extends SchemaNode
     /**
      * @return mixed
      */
-    public function getConst()
+    public function getConst(): mixed
     {
         return $this->const;
     }
@@ -939,7 +941,7 @@ class ObjectSchemaNode extends SchemaNode
      * @param mixed $const
      * @return void
      */
-    public function setConst($const): void
+    public function setConst(mixed $const): void
     {
         $this->const = $const;
     }
@@ -947,7 +949,7 @@ class ObjectSchemaNode extends SchemaNode
     /**
      * @return mixed
      */
-    public function getDefault()
+    public function getDefault(): mixed
     {
         return $this->default;
     }
@@ -956,7 +958,7 @@ class ObjectSchemaNode extends SchemaNode
      * @param mixed $default
      * @return void
      */
-    public function setDefault($default): void
+    public function setDefault(mixed $default): void
     {
         $this->default = $default;
     }
@@ -965,7 +967,7 @@ class ObjectSchemaNode extends SchemaNode
      * @param VisitorInterface $visitor
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor)
+    public function accept(VisitorInterface $visitor): mixed
     {
         return $visitor->visitObjectSchemaNode($this);
     }

@@ -7,11 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Value;
 
+use Exception;
 use Jojo1981\JsonSchemaAsg\Helper\PathHelper;
-use \Jojo1981\JsonSchemaAsg\Helper\UriHelper;
+use Jojo1981\JsonSchemaAsg\Helper\UriHelper;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
+use UnexpectedValueException;
+use function count;
+use function explode;
+use function implode;
+use function sprintf;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Value
@@ -22,31 +30,31 @@ class Reference
     public const FRAGMENT_SEPARATOR = '#';
 
     /** @var UriInterface */
-    private $uri;
+    private UriInterface $uri;
 
     /** @var JsonPointer */
-    private $jsonPointer;
+    private JsonPointer $jsonPointer;
 
     /**
      * @param string $value
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     public function __construct(string $value)
     {
-        $parts = \explode(self::FRAGMENT_SEPARATOR, $value);
+        $parts = explode(self::FRAGMENT_SEPARATOR, $value);
         try {
-            if (\count($parts) === 1) {
+            if (count($parts) === 1) {
                 $this->uri = UriHelper::createFromString($parts[0]);
                 $this->jsonPointer = new JsonPointer('/');
-            } elseif (\count($parts) === 2) {
+            } elseif (count($parts) === 2) {
                 $this->uri = UriHelper::createFromString($parts[0]);
                 $this->jsonPointer = new JsonPointer($parts[1]);
             }
-        } catch (\Exception $exception) {
-            throw new \UnexpectedValueException(
-                \implode(
+        } catch (Exception $exception) {
+            throw new UnexpectedValueException(
+                implode(
                     PHP_EOL,
-                    [\sprintf('Invalid json reference with value: `%s` passed.', $value), $exception->getMessage()]
+                    [sprintf('Invalid json reference with value: `%s` passed.', $value), $exception->getMessage()]
                 ),
                 0,
                 $exception
@@ -75,7 +83,7 @@ class Reference
      */
     public function isRelativeFile(): bool
     {
-        if ('' !== $this->uri->getHost()) {
+        if (!empty($this->uri->getHost())) {
             return false;
         }
 
@@ -111,7 +119,7 @@ class Reference
      */
     public function getValue(): string
     {
-        return $this->uri . ($this->jsonPointer ? self::FRAGMENT_SEPARATOR . $this->jsonPointer : '');
+        return $this->uri . self::FRAGMENT_SEPARATOR . $this->jsonPointer;
     }
 
     /**

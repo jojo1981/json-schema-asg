@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
@@ -17,40 +19,20 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
  */
 class PatternPropertyNode implements NodeInterface, VisitableInterface
 {
-    /** @var PatternPropertiesNode */
-    private $parent;
-
     /** @var string */
-    private $pattern;
+    private string $pattern;
 
     /** @var SchemaNode */
-    private $schema;
+    private SchemaNode $schema;
 
     /**
-     * @param PatternPropertiesNode $parent
      * @param string $pattern
+     * @param SchemaNode $schema
      */
-    public function __construct(PatternPropertiesNode $parent, string $pattern)
+    public function __construct(string $pattern, SchemaNode $schema)
     {
-        $this->parent = $parent;
         $this->pattern = $pattern;
-    }
-
-    /**
-     * @return PatternPropertiesNode
-     */
-    public function getParent(): PatternPropertiesNode
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param PatternPropertiesNode $parent
-     * @return void
-     */
-    public function setParent(PatternPropertiesNode $parent): void
-    {
-        $this->parent = $parent;
+        $this->schema = $schema;
     }
 
     /**
@@ -62,15 +44,6 @@ class PatternPropertyNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param string $pattern
-     * @return void
-     */
-    public function setPattern(string $pattern): void
-    {
-        $this->pattern = $pattern;
-    }
-
-    /**
      * @return SchemaNode
      */
     public function getSchema(): SchemaNode
@@ -79,19 +52,10 @@ class PatternPropertyNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param SchemaNode $schema
-     * @return void
-     */
-    public function setSchema(SchemaNode $schema): void
-    {
-        $this->schema = $schema;
-    }
-
-    /**
      * @param VisitorInterface $visitor
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor)
+    public function accept(VisitorInterface $visitor): mixed
     {
         return $visitor->visitPatternPropertyNode($this);
     }

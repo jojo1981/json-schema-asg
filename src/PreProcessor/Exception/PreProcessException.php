@@ -7,16 +7,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\PreProcessor\Exception;
 
+use Exception;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
+use RuntimeException;
+use function sprintf;
 
 /**
- * The base class for all exceptions thrown during the preprocess
+ * The base class for all exceptions thrown during the pre-process
  *
  * @package Jojo1981\JsonSchemaAsg\PreProcessor\Exception
  */
-class PreProcessException extends \RuntimeException
+class PreProcessException extends RuntimeException
 {
     /**
      * @return PreProcessException
@@ -37,16 +42,16 @@ class PreProcessException extends \RuntimeException
     /**
      * @param string $filename
      * @param string $referenceValue
-     * @param null|\Exception $previous
+     * @param null|Exception $previous
      * @return PreProcessException
      */
     public static function invalidRefValueFound(
         string $filename,
         string $referenceValue,
-        ?\Exception $previous = null
+        ?Exception $previous = null
     ): PreProcessException
     {
-        $message = \sprintf('Invalid reference value: `%s` of `$ref` in file: `%s`.', $referenceValue, $filename);
+        $message = sprintf('Invalid reference value: `%s` of `$ref` in file: `%s`.', $referenceValue, $filename);
         if (null !== $previous) {
             $message .= PHP_EOL . $previous->getMessage();
         }
@@ -60,7 +65,7 @@ class PreProcessException extends \RuntimeException
      */
     public static function invalidSchemaDataFound(string $typeFound): PreProcessException
     {
-        return new static(\sprintf(
+        return new static(sprintf(
             'Expect schema data to be of type boolean, array or nested array and not to be of type: %s',
             $typeFound
         ));
@@ -72,7 +77,7 @@ class PreProcessException extends \RuntimeException
      */
     public static function invalidUriPassed(UriInterface $uri): PreProcessException
     {
-        return new static(\sprintf('Expect uri to contain an absolute path. Passed uri: %s', (string) $uri));
+        return new static(sprintf('Expect uri to contain an absolute path. Passed uri: %s', $uri));
     }
 
     /**
@@ -81,7 +86,7 @@ class PreProcessException extends \RuntimeException
      */
     public static function invalidRefValueWhichPointToNoExistingIdentifierFound(string $value): PreProcessException
     {
-        return new static(\sprintf(
+        return new static(sprintf(
             'Invalid `$ref` value found. Identifier with value: %s not found in schema',
             $value
         ));

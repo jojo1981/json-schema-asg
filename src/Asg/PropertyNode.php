@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
@@ -17,40 +19,20 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
  */
 class PropertyNode implements NodeInterface, VisitableInterface
 {
-    /** @var PropertiesNode */
-    private $parent;
-
     /** @var string */
-    private $name;
+    private string $name;
 
     /** @var SchemaNode */
-    private $schema;
+    private SchemaNode $schema;
 
     /**
-     * @param PropertiesNode $parent
      * @param string $name
+     * @param SchemaNode $schema
      */
-    public function __construct(PropertiesNode $parent, string $name)
+    public function __construct(string $name, SchemaNode $schema)
     {
-        $this->parent = $parent;
         $this->name = $name;
-    }
-
-    /**
-     * @return PropertiesNode
-     */
-    public function getParent(): PropertiesNode
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param PropertiesNode $parent
-     * @return void
-     */
-    public function setParent(PropertiesNode $parent): void
-    {
-        $this->parent = $parent;
+        $this->schema = $schema;
     }
 
     /**
@@ -62,15 +44,6 @@ class PropertyNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param string $name
-     * @return void
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
      * @return SchemaNode
      */
     public function getSchema(): SchemaNode
@@ -79,19 +52,10 @@ class PropertyNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param SchemaNode $schema
-     * @return void
-     */
-    public function setSchema(SchemaNode $schema): void
-    {
-        $this->schema = $schema;
-    }
-
-    /**
      * @param VisitorInterface $visitor
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor)
+    public function accept(VisitorInterface $visitor): mixed
     {
         return $visitor->visitPropertyNode($this);
     }

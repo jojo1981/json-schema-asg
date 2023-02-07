@@ -7,10 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
 use Jojo1981\JsonSchemaAsg\Helper\ArrayHelper;
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
+use LogicException;
+use function is_bool;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Builder
@@ -29,13 +33,13 @@ class DirectSchemaBuilder extends AbstractBuilder
      * @param string $key
      * @param mixed $value
      * @param Context $context
-     * @throws \LogicException
      * @return void
+     * @throws LogicException
      */
-    protected function buildNode(string $key, $value, Context $context): void
+    protected function buildNode(string $key, mixed $value, Context $context): void
     {
-        if (!\is_bool($value) && !ArrayHelper::isAssociativeArray($value)) {
-            throw new \LogicException('Expected value to be of type boolean or object');
+        if (!is_bool($value) && !ArrayHelper::isAssociativeArray($value)) {
+            throw new LogicException('Expected value to be of type boolean or object');
         }
 
         $schemaNode = $context->resolveSchemaDataRecursively($value, $context->getParentReference());

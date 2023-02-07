@@ -1,7 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 /*
- * (c) Sqills Products B.V. 2020 <php-dev-enschede@sqills.com>
+ * This file is part of the jojo1981/json-schema-asg package
+ *
+ * Copyright (c) 2019 Joost Nijhuis <jnijhuis81@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
@@ -12,43 +19,25 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
  */
 class DependencyNode implements NodeInterface, VisitableInterface
 {
-    /** @var DependenciesNode */
-    private $parent;
-
     /** @var string */
-    private $name;
+    private string $name;
 
     /** @var null|SchemaNode */
-    private $schema;
+    private ?SchemaNode $schema;
 
     /** @var null|string[] */
-    private $sequenceOfString;
+    private ?array $sequenceOfString;
 
     /**
-     * @param DependenciesNode $parent
      * @param string $name
+     * @param array|null $sequenceOfString
+     * @param SchemaNode|null $schema
      */
-    public function __construct(DependenciesNode $parent, string $name)
+    public function __construct(string $name, ?array $sequenceOfString, ?SchemaNode $schema)
     {
-        $this->parent = $parent;
         $this->name = $name;
-    }
-
-    /**
-     * @return DependenciesNode
-     */
-    public function getParent(): DependenciesNode
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param DependenciesNode $parent
-     * @return void
-     */
-    public function setParent(DependenciesNode $parent): void
-    {
-        $this->parent = $parent;
+        $this->sequenceOfString = $sequenceOfString;
+        $this->schema = $schema;
     }
 
     /**
@@ -60,29 +49,11 @@ class DependencyNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param string $name
-     * @return void
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
      * @return SchemaNode|null
      */
     public function getSchema(): ?SchemaNode
     {
         return $this->schema;
-    }
-
-    /**
-     * @param SchemaNode|null $schema
-     * @return void
-     */
-    public function setSchema(?SchemaNode $schema): void
-    {
-        $this->schema = $schema;
     }
 
     /**
@@ -94,21 +65,11 @@ class DependencyNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param null|string[] $sequenceOfString
-     * @return void
-     */
-    public function setSequenceOfString(?array $sequenceOfString): void
-    {
-        $this->sequenceOfString = $sequenceOfString;
-    }
-
-    /**
      * @param VisitorInterface $visitor
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor)
+    public function accept(VisitorInterface $visitor): mixed
     {
         return $visitor->visitDependencyNode($this);
     }
-
 }

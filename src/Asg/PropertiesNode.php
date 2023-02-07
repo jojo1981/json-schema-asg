@@ -7,38 +7,28 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
 use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
+use function array_walk;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Ast
  */
 class PropertiesNode implements NodeInterface, VisitableInterface
 {
-    /** @var ObjectSchemaNode */
-    private $parent;
-
     /** @var PropertyNode[] */
-    private $properties = [];
+    private array $properties = [];
 
     /**
-     * @param ObjectSchemaNode $parent
      * @param PropertyNode[] $properties
      */
-    public function __construct(ObjectSchemaNode $parent, array $properties = [])
+    public function __construct(array $properties = [])
     {
-        $this->parent = $parent;
         $this->setProperties($properties);
-    }
-
-    /**
-     * @return ObjectSchemaNode
-     */
-    public function getParent(): ObjectSchemaNode
-    {
-        return $this->parent;
     }
 
     /**
@@ -50,30 +40,30 @@ class PropertiesNode implements NodeInterface, VisitableInterface
     }
 
     /**
+     * @param VisitorInterface $visitor
+     * @return mixed
+     */
+    public function accept(VisitorInterface $visitor): mixed
+    {
+        return $visitor->visitPropertiesNode($this);
+    }
+
+    /**
      * @param PropertyNode[] $properties
      * @return void
      */
-    public function setProperties(array $properties): void
+    private function setProperties(array $properties): void
     {
         $this->properties = [];
-        \array_walk($properties, [$this, 'addPropertyNode']);
+        array_walk($properties, [$this, 'addPropertyNode']);
     }
 
     /**
      * @param PropertyNode $propertyNode
      * @return void
      */
-    public function addPropertyNode(PropertyNode $propertyNode): void
+    private function addPropertyNode(PropertyNode $propertyNode): void
     {
         $this->properties[] = $propertyNode;
-    }
-
-    /**
-     * @param VisitorInterface $visitor
-     * @return mixed
-     */
-    public function accept(VisitorInterface $visitor)
-    {
-        return $visitor->visitPropertiesNode($this);
     }
 }

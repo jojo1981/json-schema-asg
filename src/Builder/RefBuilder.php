@@ -7,13 +7,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
+use InvalidArgumentException;
 use Jojo1981\JsonSchemaAsg\Asg\ReferenceNode;
 use Jojo1981\JsonSchemaAsg\PreProcessor\SchemaDataPreprocessor;
 use Jojo1981\JsonSchemaAsg\Storage\Exception\StorageException;
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
+use LogicException;
+use UnexpectedValueException;
+use function array_key_exists;
+use function is_array;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Builder
@@ -32,25 +39,22 @@ class RefBuilder extends AbstractBuilder
      * @param string $key
      * @param mixed $value
      * @param Context $context
-     * @throws \InvalidArgumentException
-     * @throws StorageException
-     * @throws \LogicException
-     * @throws \UnexpectedValueException
      * @return void
+     * @throws StorageException
+     * @throws LogicException
+     * @throws UnexpectedValueException
+     * @throws InvalidArgumentException
      */
-    protected function buildNode(string $key, $value, Context $context): void
+    protected function buildNode(string $key, mixed $value, Context $context): void
     {
         if (!$this->hasCustomPreprocessedKeys($value)) {
-            throw new \LogicException('Expected value to be preprocessed and converted into an array');
+            throw new LogicException('Expected value to be preprocessed and converted into an array');
         }
         $resolvedSchemaReference = new Reference($value[SchemaDataPreprocessor::CUSTOM_KEY_ABSOLUTE_REF]);
 
-        $referenceNode = new ReferenceNode($context->getParentSchemaNode());
-        $referenceNode->setOriginalReference($value[SchemaDataPreprocessor::CUSTOM_KEY_ORIGINAL_REF]);
-        $referenceNode->setResolvedReference($resolvedSchemaReference->getValue());
-
+        $circular = false;
         if ($context->isCircularReference($resolvedSchemaReference)) {
-            $referenceNode->setCircular(true);
+            $circular = true;
         }
 
         if ($context->getSchemaStorage()->has($resolvedSchemaReference)) {
@@ -62,8 +66,11 @@ class RefBuilder extends AbstractBuilder
             );
         }
 
+        $originalReference = $value[SchemaDataPreprocessor::CUSTOM_KEY_ORIGINAL_REF];
+        $resolvedReference = $resolvedSchemaReference->getValue();
+        $referenceNode = new ReferenceNode($originalReference, $resolvedReference, $circular, $resolvedSchema);
+
         $resolvedSchema->addReferredBy($referenceNode);
-        $referenceNode->setPointToSchema($resolvedSchema);
         $context->getParentSchemaNode()->setReference($referenceNode);
     }
 
@@ -74,15 +81,14 @@ class RefBuilder extends AbstractBuilder
      * @param mixed $value
      * @return bool
      */
-    private function hasCustomPreprocessedKeys($value): bool
+    private function hasCustomPreprocessedKeys(mixed $value): bool
     {
-        if (!\is_array($value)) {
+        if (!is_array($value)) {
             return false;
         }
 
         return
-            \array_key_exists(SchemaDataPreprocessor::CUSTOM_KEY_ABSOLUTE_REF, $value) &&
-            \array_key_exists(SchemaDataPreprocessor::CUSTOM_KEY_ORIGINAL_REF, $value)
-        ;
+            array_key_exists(SchemaDataPreprocessor::CUSTOM_KEY_ABSOLUTE_REF, $value) &&
+            array_key_exists(SchemaDataPreprocessor::CUSTOM_KEY_ORIGINAL_REF, $value);
     }
 }

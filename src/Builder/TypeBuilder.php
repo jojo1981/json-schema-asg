@@ -7,13 +7,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
+use InvalidArgumentException;
 use Jojo1981\JsonSchemaAsg\Asg\ObjectSchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\SimpleTypeNode;
 use Jojo1981\JsonSchemaAsg\Asg\SimpleTypesSequenceNode;
 use Jojo1981\JsonSchemaAsg\Helper\ArrayHelper;
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
+use LogicException;
+use function array_map;
+use function is_array;
+use function is_string;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Builder
@@ -32,53 +39,29 @@ class TypeBuilder extends AbstractBuilder
      * @param string $key
      * @param mixed $value
      * @param Context $context
-     * @throws \LogicException
      * @return void
+     * @throws LogicException
      */
-    protected function buildNode(string $key, $value, Context $context): void
+    protected function buildNode(string $key, mixed $value, Context $context): void
     {
-        if (\is_string($value)) {
+        if (is_string($value)) {
             $value = [$value];
         }
 
-        if (\is_array($value) && !empty($value) && !ArrayHelper::isAssociativeArray($value)) {
-            $context->getParentSchemaNode()->setType(
-                $this->visitSimpleTypeOrSequenceOfSimpleTypes($value, $context->getParentSchemaNode())
-            );
+        if (is_array($value) && !empty($value) && !ArrayHelper::isAssociativeArray($value)) {
+            $context->getParentSchemaNode()->setType($this->visitSimpleTypeOrSequenceOfSimpleTypes($value));
         } else {
-            throw new \LogicException('Expected value of `' . JsonKeys::KEY_TYPE . '` to be a string or a sequence of string');
+            throw new LogicException('Expected value of `' . JsonKeys::KEY_TYPE . '` to be a string or a sequence of string');
         }
     }
 
     /**
      * @param string[] $values
-     * @param ObjectSchemaNode $parentSchemaNode
      * @return SimpleTypesSequenceNode
+     * @throws InvalidArgumentException
      */
-    private function visitSimpleTypeOrSequenceOfSimpleTypes(
-        array $values,
-        ObjectSchemaNode $parentSchemaNode
-    ): SimpleTypesSequenceNode
+    private function visitSimpleTypeOrSequenceOfSimpleTypes(array $values): SimpleTypesSequenceNode
     {
-        $simpleTypesSequenceNode = new SimpleTypesSequenceNode($parentSchemaNode);
-        $simpleTypesSequenceNode->setSimpleTypeNodes(\array_map(
-            function (string $value) use ($simpleTypesSequenceNode): SimpleTypeNode {
-                return $this->visitSimpleType($simpleTypesSequenceNode, $value);
-            },
-            $values
-        ));
-
-        return $simpleTypesSequenceNode;
-    }
-
-    /**
-     * @param SimpleTypesSequenceNode $parent
-     * @param string $value
-     * @throws \InvalidArgumentException
-     * @return SimpleTypeNode
-     */
-    private function visitSimpleType(SimpleTypesSequenceNode $parent, string $value): SimpleTypeNode
-    {
-        return new SimpleTypeNode($parent, $value);
+        return new SimpleTypesSequenceNode(array_map(fn (string $value): SimpleTypeNode => new SimpleTypeNode($value), $values));
     }
 }

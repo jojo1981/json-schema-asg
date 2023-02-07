@@ -7,9 +7,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Helper;
 
 use Jojo1981\JsonSchemaAsg\Uri\Path;
+use LogicException;
+use function array_pop;
+use function explode;
+use function implode;
+use function trim;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Helper
@@ -27,7 +34,7 @@ final class PathHelper
     /**
      * @param string $relativePath
      * @param string $absolutePath
-     * @throws \LogicException
+     * @throws LogicException
      * @return string
      */
     public static function getAbsolutePath(string $relativePath, string $absolutePath): string
@@ -35,24 +42,23 @@ final class PathHelper
         $objectRelativePath = new Path($relativePath);
         $objectAbsolutePath = new Path($absolutePath);
         if ($objectRelativePath->isAbsolute()) {
-            throw new \LogicException('Expect relative path to be relative');
+            throw new LogicException('Expect relative path to be relative');
         }
         if (!$objectAbsolutePath->isAbsolute()) {
-            throw new \LogicException('Expect absolute path to be absolute');
+            throw new LogicException('Expect absolute path to be absolute');
         }
 
-        $result = \explode(DIRECTORY_SEPARATOR, \trim($objectAbsolutePath, DIRECTORY_SEPARATOR));
-
-        $pathParts = \explode(DIRECTORY_SEPARATOR, $objectRelativePath);
+        $result = explode(DIRECTORY_SEPARATOR, trim((string) $objectAbsolutePath, DIRECTORY_SEPARATOR));
+        $pathParts = explode(DIRECTORY_SEPARATOR, (string) $objectRelativePath);
         foreach ($pathParts as $pathPart) {
             if ('..' === $pathPart) {
-                \array_pop($result);
+                array_pop($result);
             } elseif ('.' !== $pathPart) {
                 $result[] = $pathPart;
             }
         }
 
-        return DIRECTORY_SEPARATOR . \implode(DIRECTORY_SEPARATOR, $result);
+        return DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $result);
     }
 
     /**

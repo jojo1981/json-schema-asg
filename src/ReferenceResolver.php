@@ -7,12 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg;
 
+use InvalidArgumentException;
 use Jojo1981\JsonSchemaAsg\Helper\ReferenceHelper;
 use Jojo1981\JsonSchemaAsg\Retriever\Exception\RetrieverException;
 use Jojo1981\JsonSchemaAsg\Retriever\SchemaRetrieverInterface;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
+use LogicException;
+use function array_key_exists;
+use function is_array;
+use function sprintf;
 
 /**
  * This class is responsible for delegating the retrieval and parsing of the schema data to the retriever but will
@@ -23,7 +30,7 @@ use Jojo1981\JsonSchemaAsg\Value\Reference;
 class ReferenceResolver implements ReferenceResolverInterface
 {
     /** @var SchemaRetrieverInterface */
-    private $schemaRetriever;
+    private SchemaRetrieverInterface $schemaRetriever;
 
     /**
      * @param SchemaRetrieverInterface $schemaRetriever
@@ -36,22 +43,22 @@ class ReferenceResolver implements ReferenceResolverInterface
     /**
      * @param Reference $reference
      * @throws RetrieverException
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
+     * @throws InvalidArgumentException
+     * @throws LogicException
      * @return bool|array|array[]
      */
-    public function readByReference(Reference $reference)
+    public function readByReference(Reference $reference): array|bool
     {
         ReferenceHelper::assertReferenceNotLocalAndNotRelative($reference);
 
         $schemaData = $this->schemaRetriever->readSchemaDataFromUri($reference->getUri());
-        if (!\is_array($schemaData)) {
-            throw new \LogicException(\sprintf('Can not resolve reference: %s', $reference->getValue()));
+        if (!is_array($schemaData)) {
+            throw new LogicException(sprintf('Can not resolve reference: %s', $reference->getValue()));
         }
 
         foreach ($reference->getJsonPointer()->getReferenceTokens() as $referenceToken) {
-            if (!\array_key_exists($referenceToken, $schemaData)) {
-                throw new \LogicException(\sprintf('Can not resolve reference: %s', $reference->getValue()));
+            if (!array_key_exists($referenceToken, $schemaData)) {
+                throw new LogicException(sprintf('Can not resolve reference: %s', $reference->getValue()));
             }
             $schemaData = $schemaData[$referenceToken];
         }

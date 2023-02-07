@@ -7,9 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
+use function array_walk;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Ast
@@ -17,7 +20,10 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
 abstract class SchemaNode implements NodeInterface, VisitableInterface
 {
     /** @var NodeInterface[] */
-    private $parents = [];
+    private array $parents = [];
+
+    /** @var ReferenceNode[] */
+    private array $referredBy = [];
 
     public function __construct(?NodeInterface $parent = null)
     {
@@ -37,7 +43,7 @@ abstract class SchemaNode implements NodeInterface, VisitableInterface
     public function setParents(array $parents): void
     {
         $this->parents = [];
-        \array_walk($parents, [$this, 'addParent']);
+        array_walk($parents, [$this, 'addParent']);
     }
 
     /**
@@ -49,9 +55,6 @@ abstract class SchemaNode implements NodeInterface, VisitableInterface
         $this->parents[] = $parent;
     }
 
-    /** @var ReferenceNode[] */
-    private $referredBy = [];
-
     /**
      * @param ReferenceNode[] $referredBy
      * @return void
@@ -59,7 +62,7 @@ abstract class SchemaNode implements NodeInterface, VisitableInterface
     public function setReferredBy(array $referredBy): void
     {
         $this->referredBy = [];
-        \array_walk($referredBy, [$this, 'addReferredBy']);
+        array_walk($referredBy, [$this, 'addReferredBy']);
     }
 
     /**

@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Retriever;
 
 use Jojo1981\JsonSchemaAsg\Retriever\Exception\RetrieverException;
@@ -23,10 +25,10 @@ use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
 class FileStorageSchemaRetrieverDecorator implements SchemaRetrieverInterface
 {
     /** @var SchemaRetrieverInterface */
-    private $schemaRetriever;
+    private SchemaRetrieverInterface $schemaRetriever;
 
     /** @var FileStorageInterface */
-    private $fileStorage;
+    private FileStorageInterface $fileStorage;
 
     /**
      * @param SchemaRetrieverInterface $schemaRetriever
@@ -44,7 +46,7 @@ class FileStorageSchemaRetrieverDecorator implements SchemaRetrieverInterface
      * @throws StorageException
      * @return array|array[]|bool
      */
-    public function readSchemaDataFromUri(UriInterface $uri)
+    public function readSchemaDataFromUri(UriInterface $uri): array|bool
     {
         if (!$this->fileStorage->has($uri)) {
             $this->fileStorage->add($uri, $this->schemaRetriever->readSchemaDataFromUri($uri));

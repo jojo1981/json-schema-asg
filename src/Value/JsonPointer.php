@@ -7,9 +7,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Value;
 
 use Jojo1981\JsonSchemaAsg\Helper\ReferenceTokenParser;
+use UnexpectedValueException;
+use function explode;
+use function implode;
+use function sprintf;
+use function str_starts_with;
+use function substr;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Value
@@ -20,11 +28,11 @@ class JsonPointer
     public const REFERENCE_TOKEN_SEPARATOR = '/';
 
     /** @var string[] */
-    private $referenceTokens;
+    private array $referenceTokens;
 
     /**
      * @param string $value
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     public function __construct(string $value)
     {
@@ -45,7 +53,7 @@ class JsonPointer
      */
     public function getValue(): string
     {
-        return '/' . \implode(
+        return '/' . implode(
             self::REFERENCE_TOKEN_SEPARATOR,
             ReferenceTokenParser::denormalizeReferenceTokens($this->referenceTokens)
         );
@@ -61,12 +69,12 @@ class JsonPointer
 
     /**
      * @param string $value
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     private function assertValue(string $value): void
     {
-        if (0 !== \strpos($value, '/')) {
-            throw new \UnexpectedValueException(\sprintf('Invalid json pointer with value: `%s` passed.', $value));
+        if (!str_starts_with($value, '/')) {
+            throw new UnexpectedValueException(sprintf('Invalid json pointer with value: `%s` passed.', $value));
         }
     }
 
@@ -80,6 +88,6 @@ class JsonPointer
             return [];
         }
 
-        return ReferenceTokenParser::normalizeReferenceTokens(\explode('/', \substr($value, 1)));
+        return ReferenceTokenParser::normalizeReferenceTokens(explode('/', substr($value, 1)));
     }
 }

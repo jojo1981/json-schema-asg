@@ -7,9 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Storage;
 
+use InvalidArgumentException;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
+use LogicException;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Storage
@@ -24,11 +28,11 @@ interface ReferenceLookupTableInterface
     public function peek(): ?Reference;
 
     /**
-     * Push a reference on the stack. The reference must be have an uri with an absolute path in it.
+     * Push a reference on the stack. The reference must have an uri with an absolute path in it.
      * Throws an invalid argument exception when the reference is not valid.
      *
      * @param Reference $reference
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return void
      */
     public function push(Reference $reference): void;
@@ -36,7 +40,7 @@ interface ReferenceLookupTableInterface
     /**
      * Pop the last reference from the stack. Throws an logic exception when the stack is empty.
      *
-     * @throws \LogicException
+     * @throws LogicException
      * @return Reference
      */
     public function pop(): Reference;
@@ -76,7 +80,7 @@ interface ReferenceLookupTableInterface
      * Throws an invalid argument exception when the reference is not valid.
      *
      * @param Reference $reference
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return bool
      */
     public function isCircularReference(Reference $reference): bool;

@@ -7,10 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Storage\Exception;
 
 use Jojo1981\JsonSchemaAsg\Value\Reference;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
+use LogicException;
+use function sprintf;
 
 /**
  * This is the base class for all exceptions thrown during the storage of raw json schema data and storing the
@@ -18,7 +22,7 @@ use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
  *
  * @package Jojo1981\JsonSchemaAsg\Storage\Exception
  */
-class StorageException extends \LogicException
+class StorageException extends LogicException
 {
     /**
      * @param UriInterface $uri
@@ -26,7 +30,7 @@ class StorageException extends \LogicException
      */
     public static function alreadyExistsForUriException(UriInterface $uri): StorageException
     {
-        return new self(\sprintf('Already stored a schema for file: %s', (string) $uri));
+        return new self(sprintf('Already stored a schema for file: %s', (string) $uri));
     }
 
     /**
@@ -35,7 +39,7 @@ class StorageException extends \LogicException
      */
     public static function noSchemaDataForUriExistsException(UriInterface $uri): StorageException
     {
-        return new self(\sprintf('No schema data for file: %s available in the storage', (string) $uri));
+        return new self(sprintf('No schema data for file: %s available in the storage', $uri));
     }
 
     /**
@@ -44,7 +48,7 @@ class StorageException extends \LogicException
      */
     public static function alreadyExistsForSchemaReferenceException(Reference $reference): StorageException
     {
-        return new self(\sprintf('Already stored a schema for reference: %s', $reference->getValue()));
+        return new self(sprintf('Already stored a schema for reference: %s', $reference->getValue()));
     }
 
     /**
@@ -53,6 +57,6 @@ class StorageException extends \LogicException
      */
     public static function noSchemaForSchemaReferenceExistsException(Reference $reference): StorageException
     {
-        return new self(\sprintf('No schema with reference: %s available in the storage', $reference->getValue()));
+        return new self(sprintf('No schema with reference: %s available in the storage', $reference->getValue()));
     }
 }

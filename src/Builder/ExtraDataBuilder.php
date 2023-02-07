@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
 use Jojo1981\JsonSchemaAsg\BuilderRegistry;
@@ -39,7 +41,7 @@ class ExtraDataBuilder implements BuilderInterface
      * @param Context $context
      * @return void
      */
-    public function build(string $key, $value, Context $context): void
+    public function build(string $key, mixed $value, Context $context): void
     {
         $context->getParentSchemaNode()->addExtraData($key, $value);
     }

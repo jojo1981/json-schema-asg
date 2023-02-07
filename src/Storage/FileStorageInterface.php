@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Storage;
 
 use Jojo1981\JsonSchemaAsg\Storage\Exception\StorageException;
@@ -24,11 +26,11 @@ interface FileStorageInterface
      * Add schema data for the passed uri into the store
      *
      * @param UriInterface $uri
-     * @param bool|array|array[] $schemaData
-     * @throws StorageException when there is already schema data for the passed filename in this store
+     * @param array|bool|array[] $schemaData
      * @return void
+     * @throws StorageException when there is already schema data for the passed filename in this store
      */
-    public function add(UriInterface $uri, $schemaData): void;
+    public function add(UriInterface $uri, array|bool $schemaData): void;
 
     /**
      * Check if there is schema data for the passed uri available in the store
@@ -40,10 +42,10 @@ interface FileStorageInterface
 
     /**
      * @param UriInterface $uri
-     * @throws StorageException when a there isn't a schema data available in the store for the passed uri
      * @return bool|array|array[]
+     * @throws StorageException when a there isn't a schema data available in the store for the passed uri
      */
-    public function get(UriInterface $uri);
+    public function get(UriInterface $uri): array|bool;
 
     /**
      * Clears the store for a fresh start

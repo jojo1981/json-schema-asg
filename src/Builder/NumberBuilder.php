@@ -7,9 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
+use LogicException;
+use function is_float;
+use function is_int;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Builder
@@ -28,17 +33,17 @@ class NumberBuilder extends AbstractBuilder
      * @param string $key
      * @param mixed $value
      * @param Context $context
-     * @throws \LogicException
      * @return void
+     * @throws LogicException
      */
-    protected function buildNode(string $key, $value, Context $context): void
+    protected function buildNode(string $key, mixed $value, Context $context): void
     {
-        if (!\is_int($value) && !\is_float($value)) {
-            throw new \LogicException('Expected type to be of type number');
+        if (!is_int($value) && !is_float($value)) {
+            throw new LogicException('Expected type to be of type number');
         }
 
         if (JsonKeys::KEY_MULTIPLE_OF === $key && $value < 1) {
-            throw new \LogicException('Expected to have a number value which is higher than zero');
+            throw new LogicException('Expected to have a number value which is higher than zero');
         }
 
         switch ($key) {

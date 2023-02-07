@@ -7,11 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Helper;
 
+use InvalidArgumentException;
 use Jojo1981\JsonSchemaAsg\Value\JsonPointer;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
-use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
+use LogicException;
+use UnexpectedValueException;
+use function dirname;
+use function implode;
+use function rtrim;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Helper
@@ -29,9 +36,9 @@ final class ReferenceHelper
     /**
      * @param string $referenceValue
      * @param Reference $parentReference
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     * @throws \UnexpectedValueException
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws UnexpectedValueException
      * @return Reference
      */
     public static function buildAbsoluteReference(string $referenceValue, Reference $parentReference): Reference
@@ -39,19 +46,19 @@ final class ReferenceHelper
         $schemaReference = new Reference($referenceValue);
         if ($schemaReference->isLocal()) {
             $schemaReference = self::createFromUriAndJsonPointer(
-                $parentReference->getUri(),
+                (string) $parentReference->getUri(),
                 $schemaReference->getJsonPointer()
             );
         }
         if ($schemaReference->isRelativeFile() && $parentReference->isAbsoluteFile()) {
             $absoluteFilePath = PathHelper::getAbsolutePath(
                 $schemaReference->getUri()->getPath(),
-                \dirname($parentReference->getUri()->getPath())
+                dirname($parentReference->getUri()->getPath())
             );
 
             $uri = $parentReference->getUri()->withPath($absoluteFilePath);
             $schemaReference = self::createFromUriAndJsonPointer(
-                $uri,
+                (string) $uri,
                 $schemaReference->getJsonPointer()
             );
         }
@@ -62,24 +69,24 @@ final class ReferenceHelper
     /**
      * @param Reference $reference
      * @param string $key
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      * @return Reference
      */
     public static function createFromReferenceByAppendingKey(Reference $reference, string $key): Reference
     {
         return self::createFromUriAndJsonPointer(
-            $reference->getUri(),
+            (string) $reference->getUri(),
             self::createFromJsonPointerAndReferenceTokens($reference->getJsonPointer(), [$key])
         );
     }
 
     /**
-     * @param UriInterface $uri
+     * @param string $uri
      * @param JsonPointer $jsonPointer
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      * @return Reference
      */
-    public static function createFromUriAndJsonPointer(UriInterface $uri, JsonPointer $jsonPointer): Reference
+    public static function createFromUriAndJsonPointer(string $uri, JsonPointer $jsonPointer): Reference
     {
         return new Reference($uri . Reference::FRAGMENT_SEPARATOR . $jsonPointer->getValue());
     }
@@ -87,7 +94,7 @@ final class ReferenceHelper
     /**
      * @param JsonPointer $jsonPointer
      * @param array $referenceTokens
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      * @return JsonPointer
      */
     public static function createFromJsonPointerAndReferenceTokens(
@@ -95,7 +102,7 @@ final class ReferenceHelper
         array $referenceTokens
     ): JsonPointer
     {
-        $jsonPointerValue = \rtrim($jsonPointer->getValue(), JsonPointer::REFERENCE_TOKEN_SEPARATOR);
+        $jsonPointerValue = rtrim($jsonPointer->getValue(), JsonPointer::REFERENCE_TOKEN_SEPARATOR);
         $jsonPointerValue .= JsonPointer::REFERENCE_TOKEN_SEPARATOR;
 
         return new JsonPointer($jsonPointerValue . self::createReferenceTokenString($referenceTokens));
@@ -107,18 +114,18 @@ final class ReferenceHelper
      */
     private static function createReferenceTokenString(array $referenceTokens): string
     {
-        return \implode(JsonPointer::REFERENCE_TOKEN_SEPARATOR, $referenceTokens);
+        return implode(JsonPointer::REFERENCE_TOKEN_SEPARATOR, $referenceTokens);
     }
 
     /**
      * @param Reference $reference
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @return void
      */
     public static function assertReferenceNotLocalAndNotRelative(Reference $reference): void
     {
         if ($reference->isLocal() || $reference->isRelativeFile()) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Reference may not be local or relative. It must contain and absolute file path or an url'
             );
         }

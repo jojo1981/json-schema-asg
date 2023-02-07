@@ -7,13 +7,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\PreProcessor;
 
 use Jojo1981\JsonSchemaAsg\PreProcessor\Exception\PreProcessException;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
 
 /**
- * This interface describes an interface for json schema data pre processors. The preprocessors can be used directly
+ * This interface describes an interface for json schema data pre-processors. The preprocessors can be used directly
  * after retrieving the json schema data before it will be cached. They can be used to index data and/or resolved `$id`
  * and `$ref` values.
  *
@@ -25,9 +27,9 @@ interface SchemaDataPreprocessorInterface
      * Preprocess the schema data and returned the updated schema data
      *
      * @param UriInterface $uri
-     * @param bool|array|array[] $schemaData
-     * @throws PreProcessException
+     * @param array|bool|array[] $schemaData
      * @return bool|array|array[]
+     * @throws PreProcessException
      */
-    public function preProcess(UriInterface $uri, $schemaData);
+    public function preProcess(UriInterface $uri, array|bool $schemaData): array|bool;
 }

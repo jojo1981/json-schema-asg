@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg;
 
 use Jojo1981\JsonSchemaAsg\Exception\JsonSchemaAsgException;
@@ -22,6 +24,7 @@ use Jojo1981\JsonSchemaAsg\Storage\ReferenceLookupTable;
 use Jojo1981\JsonSchemaAsg\Storage\ReferenceLookupTableInterface;
 use Jojo1981\JsonSchemaAsg\Storage\SchemaStorage;
 use Jojo1981\JsonSchemaAsg\Storage\SchemaStorageInterface;
+use LogicException;
 
 /**
  * This factory is useful for easy getting started with the SchemaResolver and will do the basic setup and build you
@@ -31,29 +34,29 @@ use Jojo1981\JsonSchemaAsg\Storage\SchemaStorageInterface;
  */
 class SchemaResolverFactory
 {
-    /** @var SchemaStorageInterface */
-    private $schemaStorage;
+    /** @var SchemaStorageInterface|null */
+    private ?SchemaStorageInterface $schemaStorage = null;
 
-    /** @var SchemaRetrieverInterface */
-    private $schemaRetriever;
+    /** @var SchemaRetrieverInterface|null */
+    private ?SchemaRetrieverInterface $schemaRetriever = null;
 
-    /** @var ReferenceResolverInterface */
-    private $referenceResolver;
+    /** @var ReferenceResolverInterface|null */
+    private ?ReferenceResolverInterface $referenceResolver = null;
 
-    /** @var ReferenceLookupTableInterface */
-    private $referenceLookupTable;
+    /** @var ReferenceLookupTableInterface|null */
+    private ?ReferenceLookupTableInterface $referenceLookupTable = null;
 
-    /** @var BuilderRegistry */
-    private $builderRegistry;
+    /** @var BuilderRegistry|null */
+    private ?BuilderRegistry $builderRegistry = null;
 
-    /** @var FileStorageInterface */
-    private $fileStorage;
+    /** @var FileStorageInterface|null */
+    private ?FileStorageInterface $fileStorage = null;
 
-    /** @var SchemaDataPreprocessorInterface */
-    private $preProcessor;
+    /** @var SchemaDataPreprocessorInterface|null */
+    private ?SchemaDataPreprocessorInterface $preProcessor = null;
 
     /** @var bool */
-    private $frozen = false;
+    private bool $frozen = false;
 
     /**
      * @param FileStorageInterface $fileStorage
@@ -134,7 +137,7 @@ class SchemaResolverFactory
     }
 
     /**
-     * @throws \LogicException
+     * @throws LogicException
      * @return SchemaResolverInterface
      */
     public function getSchemaResolver(): SchemaResolverInterface
@@ -208,7 +211,7 @@ class SchemaResolverFactory
     }
 
     /**
-     * @throws \LogicException
+     * @throws LogicException
      * @return BuilderRegistry
      */
     private function getBuilderRegistry(): BuilderRegistry

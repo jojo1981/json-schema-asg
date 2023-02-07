@@ -7,12 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
 use Jojo1981\JsonSchemaAsg\Asg\ItemsNode;
 use Jojo1981\JsonSchemaAsg\Helper\ArrayHelper;
 use Jojo1981\JsonSchemaAsg\Helper\ReferenceHelper;
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
+use LogicException;
+use UnexpectedValueException;
+use function is_array;
+use function is_bool;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Builder
@@ -31,31 +37,31 @@ class ItemsBuilder extends AbstractBuilder
      * @param string $key
      * @param mixed $value
      * @param Context $context
-     * @throws \LogicException
-     * @throws \UnexpectedValueException
      * @return void
+     * @throws UnexpectedValueException
+     * @throws LogicException
      */
-    protected function buildNode(string $key, $value, Context $context): void
+    protected function buildNode(string $key, mixed $value, Context $context): void
     {
-        if (!\is_bool($value) && !\is_array($value)) {
-            throw new \LogicException('Expected value of items to be a schema or a sequence of schemas');
+        if (!is_bool($value) && !is_array($value)) {
+            throw new LogicException('Expected value of items to be a schema or a sequence of schemas');
         }
-        if (\is_array($value) && empty($value)) {
-            throw new \LogicException('Expected value of items to not to be an empty object');
+        if (is_array($value) && empty($value)) {
+            throw new LogicException('Expected value of items to not to be an empty object');
         }
 
-        $itemsNode = new ItemsNode($context->getParentSchemaNode());
-        if (\is_bool($value) || ArrayHelper::isAssociativeArray($value)) {
+        $schemas = [];
+        if (is_bool($value) || ArrayHelper::isAssociativeArray($value)) {
             // single schema found
-            $itemsNode->addSchema($context->resolveSchemaDataRecursively($value, $context->getParentReference()));
+            $schemas[] = $context->resolveSchemaDataRecursively($value, $context->getParentReference());
         } else {
             // sequence of schemas
             foreach ($value as $index => $itemSchema) {
                 $newReference = ReferenceHelper::createFromReferenceByAppendingKey($context->getParentReference(), $index);
-                $itemsNode->addSchema($context->resolveSchemaDataRecursively($itemSchema, $newReference));
+                $schemas[] = $context->resolveSchemaDataRecursively($itemSchema, $newReference);
             }
         }
 
-        $context->getParentSchemaNode()->setItems($itemsNode);
+        $context->getParentSchemaNode()->setItems(new ItemsNode($schemas));
     }
 }

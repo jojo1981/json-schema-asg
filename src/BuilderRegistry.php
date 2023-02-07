@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg;
 
 use Jojo1981\JsonSchemaAsg\Builder\BooleanBuilder;
@@ -30,6 +32,12 @@ use Jojo1981\JsonSchemaAsg\Builder\RequiredBuilder;
 use Jojo1981\JsonSchemaAsg\Builder\SequenceOfSchemasBuilder;
 use Jojo1981\JsonSchemaAsg\Builder\StringBuilder;
 use Jojo1981\JsonSchemaAsg\Builder\TypeBuilder;
+use LogicException;
+use function array_key_exists;
+use function array_keys;
+use function array_walk;
+use function in_array;
+use function sprintf;
 
 /**
  * This class is a registry for builders but is a builder itself and will delegate the build process to the builder
@@ -60,19 +68,19 @@ class BuilderRegistry implements BuilderInterface
      */
     public function setBuilders(array $builders): void
     {
-        \array_walk($builders, [$this, 'addBuilder']);
+        array_walk($builders, [$this, 'addBuilder']);
     }
 
     /**
      * @param BuilderInterface $builder
-     * @throws \LogicException
+     * @throws LogicException
      * @return void
      */
     public function addBuilder(BuilderInterface $builder): void
     {
         foreach ($builder->getAcceptedKeys() as $key) {
-            if (\array_key_exists($key, $this->builders)) {
-                throw new \LogicException('Only one builder for a certain key kan be added');
+            if (array_key_exists($key, $this->builders)) {
+                throw new LogicException('Only one builder for a certain key kan be added');
             }
             $this->builders[$key] = $builder;
         }
@@ -84,18 +92,17 @@ class BuilderRegistry implements BuilderInterface
      */
     public function hasBuilderForKey(string $key): bool
     {
-        return \array_key_exists($key, $this->builders);
+        return array_key_exists($key, $this->builders);
     }
 
     /**
      * @param string $key
-     * @throws \LogicException
-     * @return bool
+     * @throws LogicException
      */
-    public function removeBuilderForKey(string $key): bool
+    public function removeBuilderForKey(string $key)
     {
         if (!$this->hasBuilderForKey($key)) {
-            throw new \LogicException(\sprintf(
+            throw new LogicException(sprintf(
                 'Trying to remove builder for key: %s, but there isn\'t a builder registered for that key',
                 $key
             ));
@@ -109,7 +116,7 @@ class BuilderRegistry implements BuilderInterface
      */
     public function getAcceptedKeys(): array
     {
-        return \array_keys($this->builders);
+        return array_keys($this->builders);
     }
 
     /**
@@ -118,24 +125,24 @@ class BuilderRegistry implements BuilderInterface
      */
     public function acceptKey(string $key): bool
     {
-        return \in_array($key, $this->getAcceptedKeys(), true)
-            || \in_array(self::WILDCARD_SYMBOL, $this->getAcceptedKeys(), true);
+        return in_array($key, $this->getAcceptedKeys(), true)
+            || in_array(self::WILDCARD_SYMBOL, $this->getAcceptedKeys(), true);
     }
 
     /**
      * @param string $key
      * @param mixed $value
      * @param Context $context
-     * @throws BuilderException
      * @return void
+     *@throws BuilderException
      */
-    public function build(string $key, $value, Context $context): void
+    public function build(string $key, mixed $value, Context $context): void
     {
-        if (\array_key_exists($key, $this->builders)) {
+        if (array_key_exists($key, $this->builders)) {
             $this->builders[$key]->build($key, $value, $context);
             return;
         }
-        if (\array_key_exists(self::WILDCARD_SYMBOL, $this->builders)) {
+        if (array_key_exists(self::WILDCARD_SYMBOL, $this->builders)) {
             $this->builders[self::WILDCARD_SYMBOL]->build($key, $value, $context);
             return;
         }
@@ -144,7 +151,7 @@ class BuilderRegistry implements BuilderInterface
     }
 
     /**
-     * @throws \LogicException
+     * @throws LogicException
      * @return BuilderRegistry
      */
     public static function createDefaultBuilderRegistry(): BuilderRegistry

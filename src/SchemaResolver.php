@@ -7,8 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg;
 
+use InvalidArgumentException;
 use Jojo1981\JsonSchemaAsg\Asg\BooleanSchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\EmptySchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\NodeInterface;
@@ -23,6 +26,10 @@ use Jojo1981\JsonSchemaAsg\Storage\Exception\StorageException;
 use Jojo1981\JsonSchemaAsg\Storage\ReferenceLookupTableInterface;
 use Jojo1981\JsonSchemaAsg\Storage\SchemaStorageInterface;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
+use LogicException;
+use UnexpectedValueException;
+use function is_array;
+use function is_bool;
 
 /**
  * The schema resolver can only resolve schemas when it get a reference passed which contains
@@ -36,16 +43,16 @@ use Jojo1981\JsonSchemaAsg\Value\Reference;
 class SchemaResolver implements SchemaResolverInterface
 {
     /** @var SchemaStorageInterface */
-    private $schemaStorage;
+    private SchemaStorageInterface $schemaStorage;
 
     /** @var ReferenceResolverInterface */
-    private $referenceResolver;
+    private ReferenceResolverInterface $referenceResolver;
 
     /** @var ReferenceLookupTableInterface */
-    private $referenceLookupTable;
+    private ReferenceLookupTableInterface $referenceLookupTable;
 
     /** @var BuilderInterface */
-    private $builder;
+    private BuilderInterface $builder;
 
     /**
      * @param SchemaStorageInterface $schemaStorage
@@ -67,23 +74,21 @@ class SchemaResolver implements SchemaResolverInterface
 
     /**
      * @param Reference $reference
-     * @throws StorageException
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     * @throws \UnexpectedValueException
      * @return NodeInterface
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws UnexpectedValueException
+     * @throws StorageException
      */
     public function resolveSchema(Reference $reference): NodeInterface
     {
         ReferenceHelper::assertReferenceNotLocalAndNotRelative($reference);
         $this->referenceLookupTable->clear();
-
         if (!$this->schemaStorage->has($reference)) {
             $this->resolveSchemaDataRecursively($this->referenceResolver->readByReference($reference), $reference);
         }
-
         if ($this->referenceLookupTable->isNonEmpty()) {
-            throw new \LogicException(
+            throw new LogicException(
                 'The reference lookup table should be empty. During the resolve process the reference lookup stack ' .
                 'modified from outside this class'
             );
@@ -99,30 +104,30 @@ class SchemaResolver implements SchemaResolverInterface
      * The reference lookup table is needed to determine if we have found a circular reference and avoid getting an
      * infinite loop
      *
-     * The storage is to store the already build schema's so we can get a object reference to them instead of recreating
+     * The storage is to store the already build schema's, so we can get a object reference to them instead of recreating
      * the schemas again and get new instances for them.
      *
-     * @param bool|array|array[] $schemaData
+     * @param array|bool|array[] $schemaData
      * @param null|ObjectSchemaNode $parentSchemaNode
      * @param Reference $reference
-     * @throws StorageException
-     * @throws \InvalidArgumentException
-     * @throws \LogicException
-     * @throws \UnexpectedValueException
      * @return SchemaNode
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws UnexpectedValueException
+     * @throws StorageException
      */
     private function resolveSchemaDataRecursively(
-        $schemaData,
+        array|bool $schemaData,
         Reference $reference,
         ?ObjectSchemaNode $parentSchemaNode = null
-    ): SchemaNode
-    {
+    ): SchemaNode {
         ReferenceHelper::assertReferenceNotLocalAndNotRelative($reference);
         if ($this->schemaStorage->has($reference)) {
             $schemaNode = $this->schemaStorage->get($reference);
             if (null !== $parentSchemaNode) {
                 $schemaNode->addParent($parentSchemaNode);
             }
+
             return $schemaNode;
         }
 
@@ -142,9 +147,9 @@ class SchemaResolver implements SchemaResolverInterface
      * @param ObjectSchemaNode $schemaNode
      * @param Reference $reference
      * @param array $schemaData
-     * @throws BuilderException
-     * @throws \UnexpectedValueException
      * @return void
+     * @throws UnexpectedValueException
+     * @throws BuilderException
      */
     private function resolveSchemaData(ObjectSchemaNode $schemaNode, Reference $reference, array $schemaData): void
     {
@@ -157,26 +162,23 @@ class SchemaResolver implements SchemaResolverInterface
     }
 
     /**
-     * @param bool|array|array[] $schemaData
+     * @param array|bool|array[] $schemaData
      * @param null|ObjectSchemaNode $parentSchemaNode
-     * @throws \LogicException
      * @return SchemaNode
+     * @throws LogicException
      */
-    private function buildSchemaNode($schemaData, ?ObjectSchemaNode $parentSchemaNode = null): SchemaNode
+    private function buildSchemaNode(array|bool $schemaData, ?ObjectSchemaNode $parentSchemaNode = null): SchemaNode
     {
-        if (\is_array($schemaData) && empty($schemaData)) {
+        if (is_array($schemaData) && empty($schemaData)) {
             return new EmptySchemaNode($parentSchemaNode);
         }
-
-        if (\is_bool($schemaData)) {
+        if (is_bool($schemaData)) {
             return new BooleanSchemaNode($schemaData, $parentSchemaNode);
         }
-
         if (ArrayHelper::isAssociativeArray($schemaData)) {
             return new ObjectSchemaNode($parentSchemaNode);
         }
-
-        throw new \LogicException('Invalid schema passed. A schema must be a boolean value or an object');
+        throw new LogicException('Invalid schema passed. A schema must be a boolean value or an object');
     }
 
     /**

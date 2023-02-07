@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
@@ -17,44 +19,30 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
  */
 class ReferenceNode implements NodeInterface, VisitableInterface
 {
-    /** @var ObjectSchemaNode */
-    private $parent;
+    /** @var string */
+    private string $originalReference;
 
     /** @var string */
-    private $originalReference;
-
-    /** @var string */
-    private $resolvedReference;
-
-    /** @var SchemaNode */
-    private $pointToSchema;
+    private string $resolvedReference;
 
     /** @var bool */
-    private $circular = false;
+    private bool $circular;
+
+    /** @var SchemaNode */
+    private SchemaNode $pointToSchema;
 
     /**
-     * @param ObjectSchemaNode $parent
+     * @param string $originalReference
+     * @param string $resolvedReference
+     * @param bool $circular
+     * @param SchemaNode $pointToSchema
      */
-    public function __construct(ObjectSchemaNode $parent)
+    public function __construct(string $originalReference, string $resolvedReference, bool $circular, SchemaNode $pointToSchema)
     {
-        $this->parent = $parent;
-    }
-
-    /**
-     * @return ObjectSchemaNode
-     */
-    public function getParent(): ObjectSchemaNode
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param ObjectSchemaNode $parent
-     * @return void
-     */
-    public function setParent(ObjectSchemaNode $parent): void
-    {
-        $this->parent = $parent;
+        $this->originalReference = $originalReference;
+        $this->resolvedReference = $resolvedReference;
+        $this->circular = $circular;
+        $this->pointToSchema = $pointToSchema;
     }
 
     /**
@@ -66,46 +54,11 @@ class ReferenceNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param string $originalReference
-     * @return void
-     */
-    public function setOriginalReference(string $originalReference): void
-    {
-        $this->originalReference = $originalReference;
-    }
-
-    /**
      * @return string
      */
     public function getResolvedReference(): string
     {
         return $this->resolvedReference;
-    }
-
-    /**
-     * @param string $resolvedReference
-     * @return void
-     */
-    public function setResolvedReference(string $resolvedReference): void
-    {
-        $this->resolvedReference = $resolvedReference;
-    }
-
-    /**
-     * @return SchemaNode
-     */
-    public function getPointToSchema(): SchemaNode
-    {
-        return $this->pointToSchema;
-    }
-
-    /**
-     * @param SchemaNode $pointToSchema
-     * @return void
-     */
-    public function setPointToSchema(SchemaNode $pointToSchema): void
-    {
-        $this->pointToSchema = $pointToSchema;
     }
 
     /**
@@ -117,19 +70,18 @@ class ReferenceNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param bool $circular
-     * @return void
+     * @return SchemaNode
      */
-    public function setCircular(bool $circular): void
+    public function getPointToSchema(): SchemaNode
     {
-        $this->circular = $circular;
+        return $this->pointToSchema;
     }
 
     /**
      * @param VisitorInterface $visitor
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor)
+    public function accept(VisitorInterface $visitor): mixed
     {
         return $visitor->visitReferenceNode($this);
     }

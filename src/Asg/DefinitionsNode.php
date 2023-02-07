@@ -7,45 +7,28 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
 use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
+use function array_walk;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Ast
  */
 class DefinitionsNode implements NodeInterface, VisitableInterface
 {
-    /** @var ObjectSchemaNode */
-    private $parent;
-
     /** @var DefinitionNode[] */
-    private $definitionNodes = [];
+    private array $definitionNodes = [];
 
     /**
-     * @param ObjectSchemaNode $parent
+     * @param DefinitionNode[] $definitionNodes
      */
-    public function __construct(ObjectSchemaNode $parent)
+    public function __construct(array $definitionNodes)
     {
-        $this->parent = $parent;
-    }
-
-    /**
-     * @return ObjectSchemaNode
-     */
-    public function getParent(): ObjectSchemaNode
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param ObjectSchemaNode $parent
-     * @return void
-     */
-    public function setParent(ObjectSchemaNode $parent): void
-    {
-        $this->parent = $parent;
+        $this->setDefinitionNodes($definitionNodes);
     }
 
     /**
@@ -57,30 +40,29 @@ class DefinitionsNode implements NodeInterface, VisitableInterface
     }
 
     /**
+     * @param VisitorInterface $visitor
+     * @return mixed
+     */
+    public function accept(VisitorInterface $visitor): mixed
+    {
+        return $visitor->visitDefinitionsNode($this);
+    }
+
+    /**
      * @param DefinitionNode[] $definitionNodes
      * @return void
      */
-    public function setDefinitionNodes(array $definitionNodes): void
+    private function setDefinitionNodes(array $definitionNodes): void
     {
-        $this->definitionNodes = [];
-        \array_walk($definitionNodes, [$this, 'addDefinitionNode']);
+        array_walk($definitionNodes, [$this, "addDefinitionNode"]);
     }
 
     /**
      * @param DefinitionNode $definitionNode
      * @return void
      */
-    public function addDefinitionNode(DefinitionNode $definitionNode): void
+    private function addDefinitionNode(DefinitionNode $definitionNode): void
     {
         $this->definitionNodes[] = $definitionNode;
-    }
-
-    /**
-     * @param VisitorInterface $visitor
-     * @return mixed
-     */
-    public function accept(VisitorInterface $visitor)
-    {
-        return $visitor->visitDefinitionsNode($this);
     }
 }

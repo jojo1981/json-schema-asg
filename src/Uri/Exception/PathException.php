@@ -16,6 +16,6 @@ use DomainException;
 /**
  * @package Jojo1981\JsonSchemaAsg\Uri\Exception
  */
-final class UriException extends DomainException
+final class PathException extends DomainException
 {
 }

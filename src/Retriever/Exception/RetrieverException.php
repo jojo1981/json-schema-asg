@@ -7,16 +7,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Retriever\Exception;
 
+use Exception;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
+use RuntimeException;
+use function sprintf;
 
 /**
  * This is the base class for all exceptions thrown during the retrieval and parse process of json schema data
  *
  * @package Jojo1981\JsonSchemaAsg\Retriever\Exception
  */
-class RetrieverException extends \RuntimeException
+class RetrieverException extends RuntimeException
 {
     /**
      * @param UriInterface $uri
@@ -24,17 +29,17 @@ class RetrieverException extends \RuntimeException
      */
     public static function notExistingUri(UriInterface $uri): RetrieverException
     {
-        return new static(\sprintf('Could not get data from uri: %s', (string) $uri));
+        return new static(sprintf('Could not get data from uri: %s', $uri));
     }
 
     /**
      * @param UriInterface $uri
-     * @param \Exception $previous
+     * @param Exception $previous
      * @return RetrieverException
      */
-    public static function couldNotParseYamlContent(UriInterface $uri, \Exception $previous): RetrieverException
+    public static function couldNotParseYamlContent(UriInterface $uri, Exception $previous): RetrieverException
     {
-        return new static(\sprintf('Could not parse yaml content for uri: %s', (string) $uri), 0, $previous);
+        return new static(sprintf('Could not parse yaml content for uri: %s', $uri), 0, $previous);
     }
 
     /**
@@ -50,9 +55,9 @@ class RetrieverException extends \RuntimeException
     ): RetrieverException
     {
         return new static(
-            \sprintf(
+            sprintf(
                 'Could not parse json content for uri: `%s`. Parse error: `%s`[%d] given',
-                (string) $uri,
+                $uri,
                 $errorMessage,
                 $jsonErrorCode
             ),

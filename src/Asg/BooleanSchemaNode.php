@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
@@ -17,7 +19,7 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
 class BooleanSchemaNode extends SchemaNode
 {
     /** @var bool */
-    private $value;
+    private bool $value;
 
     /**
      * @param bool $value
@@ -38,19 +40,10 @@ class BooleanSchemaNode extends SchemaNode
     }
 
     /**
-     * @param bool $value
-     * @return void
-     */
-    public function setValue(bool $value): void
-    {
-        $this->value = $value;
-    }
-
-    /**
      * @param VisitorInterface $visitor
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor)
+    public function accept(VisitorInterface $visitor): mixed
     {
         return $visitor->visitBooleanSchemaNode($this);
     }

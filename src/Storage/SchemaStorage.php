@@ -7,11 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Storage;
 
 use Jojo1981\JsonSchemaAsg\Asg\SchemaNode;
 use Jojo1981\JsonSchemaAsg\Storage\Exception\StorageException;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
+use function array_key_exists;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Storage
@@ -19,7 +22,7 @@ use Jojo1981\JsonSchemaAsg\Value\Reference;
 class SchemaStorage implements SchemaStorageInterface
 {
     /** @var SchemaNode[] */
-    private $cache = [];
+    private array $cache = [];
 
     /**
      * @param Reference $reference
@@ -41,7 +44,7 @@ class SchemaStorage implements SchemaStorageInterface
      */
     public function has(Reference $reference): bool
     {
-        return \array_key_exists($reference->getValue(), $this->cache);
+        return array_key_exists($reference->getValue(), $this->cache);
     }
 
     /**

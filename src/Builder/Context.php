@@ -7,14 +7,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
+use Closure;
+use InvalidArgumentException;
 use Jojo1981\JsonSchemaAsg\Asg\ObjectSchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\SchemaNode;
 use Jojo1981\JsonSchemaAsg\ReferenceResolverInterface;
 use Jojo1981\JsonSchemaAsg\Storage\ReferenceLookupTableInterface;
 use Jojo1981\JsonSchemaAsg\Storage\SchemaStorageInterface;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
+use LogicException;
+use function call_user_func;
 
 /**
  * This is the context class which hold information during the traversal of the raw schema data tree and have some
@@ -24,34 +30,33 @@ use Jojo1981\JsonSchemaAsg\Value\Reference;
  */
 class Context
 {
-    /** @var \Closure */
-    private $resolveSchemaDataRecursivelyCallback;
+    /** @var Closure */
+    private Closure $resolveSchemaDataRecursivelyCallback;
 
     /** @var ReferenceLookupTableInterface */
-    private $referenceLookupTable;
+    private ReferenceLookupTableInterface $referenceLookupTable;
 
     /** @var SchemaStorageInterface */
-    private $schemaStorage;
+    private SchemaStorageInterface $schemaStorage;
 
     /** @var ReferenceResolverInterface */
-    private $referenceResolver;
+    private ReferenceResolverInterface $referenceResolver;
 
-    /** @var Reference */
-    private $parentReference;
+    /** @var Reference|null */
+    private ?Reference $parentReference = null;
 
-    /** @var ObjectSchemaNode */
-    private $parentSchemaNode;
+    /** @var ObjectSchemaNode|null */
+    private ?ObjectSchemaNode $parentSchemaNode = null;
 
     /**
-     * @param \Closure $resolveSchemaDataRecursivelyCallback
+     * @param Closure $resolveSchemaDataRecursivelyCallback
      * @param ReferenceLookupTableInterface $referenceLookupTable
      * @param SchemaStorageInterface $schemaStorage
      * @param ReferenceResolverInterface $referenceResolver
      */
     public function __construct(
-        \Closure $resolveSchemaDataRecursivelyCallback,
-        ReferenceLookupTableInterface
-        $referenceLookupTable,
+        Closure $resolveSchemaDataRecursivelyCallback,
+        ReferenceLookupTableInterface $referenceLookupTable,
         SchemaStorageInterface $schemaStorage,
         ReferenceResolverInterface $referenceResolver
     ) {
@@ -62,23 +67,22 @@ class Context
     }
 
     /**
-     * @param bool|array|array[] $schemaData
+     * @param array|bool|array[] $schemaData
      * @param Reference $reference
-     * @throws \LogicException
      * @return SchemaNode
+     * @throws LogicException
      */
     public function resolveSchemaDataRecursively(
-        $schemaData,
+        array|bool $schemaData,
         Reference $reference
-    ): SchemaNode
-    {
+    ): SchemaNode {
         if ($this->isCircularReference($reference)) {
-            throw new \LogicException(
+            throw new LogicException(
                 'Can not resolve schema data for a circular reference. Grab schemaNode form the storage instead'
             );
         }
 
-        return \call_user_func(
+        return call_user_func(
             $this->resolveSchemaDataRecursivelyCallback,
             $schemaData,
             $reference,
@@ -90,15 +94,15 @@ class Context
      * @param Reference $reference
      * @return bool|array|array[]
      */
-    public function readByReference(Reference $reference)
+    public function readByReference(Reference $reference): array|bool
     {
         return $this->referenceResolver->readByReference($reference);
     }
 
     /**
      * @param Reference $reference
-     * @throws \InvalidArgumentException
      * @return bool
+     * @throws InvalidArgumentException
      */
     public function isCircularReference(Reference $reference): bool
     {

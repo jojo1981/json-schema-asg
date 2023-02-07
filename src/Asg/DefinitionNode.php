@@ -7,6 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed in the root of the source code
  */
+declare(strict_types=1);
+
 namespace Jojo1981\JsonSchemaAsg\Asg;
 
 use Jojo1981\JsonSchemaAsg\Visitor\VisitableInterface;
@@ -17,40 +19,20 @@ use Jojo1981\JsonSchemaAsg\Visitor\VisitorInterface;
  */
 class DefinitionNode implements NodeInterface, VisitableInterface
 {
-    /** @var DefinitionsNode */
-    private $parent;
-
     /** @var string */
-    private $name;
+    private string $name;
 
     /** @var SchemaNode */
-    private $schema;
+    private SchemaNode $schema;
 
     /**
-     * @param DefinitionsNode $parent
      * @param string $name
+     * @param SchemaNode $schema
      */
-    public function __construct(DefinitionsNode $parent, string $name)
+    public function __construct(string $name, SchemaNode $schema)
     {
-        $this->parent = $parent;
         $this->name = $name;
-    }
-
-    /***
-     * @return DefinitionsNode
-     */
-    public function getParent(): DefinitionsNode
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param DefinitionsNode $parent
-     * @return void
-     */
-    public function setParent(DefinitionsNode $parent): void
-    {
-        $this->parent = $parent;
+        $this->schema = $schema;
     }
 
     /**
@@ -62,15 +44,6 @@ class DefinitionNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param string $name
-     * @return void
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
      * @return SchemaNode
      */
     public function getSchema(): SchemaNode
@@ -79,19 +52,10 @@ class DefinitionNode implements NodeInterface, VisitableInterface
     }
 
     /**
-     * @param SchemaNode $schema
-     * @return void
-     */
-    public function setSchema(SchemaNode $schema): void
-    {
-        $this->schema = $schema;
-    }
-
-    /**
      * @param VisitorInterface $visitor
      * @return mixed
      */
-    public function accept(VisitorInterface $visitor)
+    public function accept(VisitorInterface $visitor): mixed
     {
         return $visitor->visitDefinitionNode($this);
     }
