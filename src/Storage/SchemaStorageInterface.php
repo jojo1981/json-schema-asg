@@ -17,8 +17,8 @@ use Jojo1981\JsonSchemaAsg\Value\Reference;
 
 /**
  * This interface describes the schema storage which will be used for storing schemas during the resolve process.
- * By using this store an object reference to schema can be retrieved an prevented that a new schema will be read
- * using the file reader and a new schema object will be build.
+ * By using this store an object reference to schema can be retrieved a prevented that a new schema will be read
+ * using the file reader and a new schema object will be created.
  *
  * @package Jojo1981\JsonSchemaAsg\Storage
  */

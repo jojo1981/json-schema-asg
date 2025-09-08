@@ -23,7 +23,7 @@ use function json_last_error_msg;
 use function pathinfo;
 
 /**
- * This schema retriever can handle retrieving schemas on the local filesystem and on the network/internet. Also it can
+ * This schema retriever can handle retrieving schemas on the local filesystem and on the network/internet. Also, it can
  * parse json schema content defined in json syntax or yaml syntax. Only file names with the extension .yml or .yaml will
  * be parsed as yaml content
  *

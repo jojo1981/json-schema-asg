@@ -22,8 +22,10 @@ use function is_array;
 use function sprintf;
 
 /**
- * This class is responsible for delegating the retrieval and parsing of the schema data to the retriever but will
- * return a sub node from it when it's being asked in the passed reference based on the json pointer in it.
+ * This class is responsible for resolving external JSON Schema references. It delegates schema retrieval to a
+ * SchemaRetrieverInterface implementation and navigates the schema data using JSON Pointers from a Reference object,
+ * returning the targeted sub-node or value. This class ensures references are neither local nor relative and throws
+ * exceptions for invalid or unresolvable references.
  *
  * @package Jojo1981\JsonSchemaAsg
  */

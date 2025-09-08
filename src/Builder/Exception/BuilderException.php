@@ -21,8 +21,11 @@ use LogicException;
  */
 class BuilderException extends LogicException
 {
+    /**
+     * @return BuilderException
+     */
     public static function unjustifiedCallingBuilder(): BuilderException
     {
-        return new static('Calling build on a builder which has not accepted the passed key');
+        return new self('Calling build on a builder which has not accepted the passed key');
     }
 }

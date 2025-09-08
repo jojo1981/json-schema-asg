@@ -32,7 +32,7 @@ use function is_array;
 use function is_bool;
 
 /**
- * The schema resolver can only resolve schemas when it get a reference passed which contains
+ * The schema resolver can only resolve schemas when it gets a reference passed which contains
  * an absolute file path or http url in it.
  *
  * It will honor the JSON schema draft 07 specification
@@ -104,7 +104,7 @@ class SchemaResolver implements SchemaResolverInterface
      * The reference lookup table is needed to determine if we have found a circular reference and avoid getting an
      * infinite loop
      *
-     * The storage is to store the already build schema's, so we can get a object reference to them instead of recreating
+     * The storage is to store the already build schema's, so we can get an object reference to them instead of recreating
      * the schemas again and get new instances for them.
      *
      * @param array|bool|array[] $schemaData

@@ -13,22 +13,23 @@ namespace Jojo1981\JsonSchemaAsg\Uri;
 
 use Jojo1981\JsonSchemaAsg\Uri\Exception\UriException;
 use League\Uri\Uri as BaseUri;
+use Stringable;
 use Throwable;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Uri
  */
-class Uri implements UriInterface
+final class Uri implements UriInterface
 {
     /** @var BaseUri */
     private BaseUri $uri;
 
     /**
-     * @param BaseUri $uri
+     * @param BaseUri|string $uri
      */
-    public function __construct(BaseUri $uri)
+    public function __construct(BaseUri|string $uri)
     {
-        $this->uri = $uri;
+        $this->uri = $uri instanceof BaseUri ? $uri : BaseUri::new($uri);
     }
 
     /**
@@ -103,7 +104,7 @@ class Uri implements UriInterface
     public function withScheme($scheme): UriInterface
     {
         try {
-            return new self(BaseUri::createFromString((string) $this->uri->withScheme($scheme)));
+            return new self(BaseUri::new((string) $this->uri->withScheme($scheme)));
         } catch (Throwable $exception) {
             throw new UriException($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -118,7 +119,7 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null): UriInterface
     {
         try {
-            return new self(BaseUri::createFromString((string) $this->uri->withUserInfo($user, $password)));
+            return new self(BaseUri::new((string) $this->uri->withUserInfo($user, $password)));
         } catch (Throwable $exception) {
             throw new UriException($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -132,7 +133,7 @@ class Uri implements UriInterface
     public function withHost($host): UriInterface
     {
         try {
-            return new self(BaseUri::createFromString((string) $this->uri->withHost($host)));
+            return new self(BaseUri::new((string) $this->uri->withHost($host)));
         } catch (Throwable $exception) {
             throw new UriException($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -146,21 +147,21 @@ class Uri implements UriInterface
     public function withPort(?int $port): UriInterface
     {
         try {
-            return new self(BaseUri::createFromString((string) $this->uri->withPort($port)));
+            return new self(BaseUri::new((string) $this->uri->withPort($port)));
         } catch (Throwable $exception) {
             throw new UriException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
     /**
-     * @param string $path
+     * @param Stringable|string $path
      * @return Uri
      * @throws UriException
      */
-    public function withPath(string $path): UriInterface
+    public function withPath(Stringable|string $path): UriInterface
     {
         try {
-            return new self(BaseUri::createFromString((string) $this->uri->withPath($path)));
+            return new self(BaseUri::new((string) $this->uri->withPath($path)));
         } catch (Throwable $exception) {
             throw new UriException($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -174,21 +175,21 @@ class Uri implements UriInterface
     public function withQuery($query): UriInterface
     {
         try {
-            return new self(BaseUri::createFromString((string) $this->uri->withQuery($query)));
+            return new self(BaseUri::new((string) $this->uri->withQuery($query)));
         } catch (Throwable $exception) {
             throw new UriException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
     /**
-     * @param string|null $fragment
+     * @param Stringable|string|null $fragment
      * @return Uri
      * @throws UriException
      */
-    public function withFragment(?string $fragment): UriInterface
+    public function withFragment(Stringable|string|null $fragment): UriInterface
     {
         try {
-            return new self(BaseUri::createFromString((string) $this->uri->withFragment($fragment)));
+            return new self(BaseUri::new((string) $this->uri->withFragment($fragment)));
         } catch (Throwable $exception) {
             throw new UriException($exception->getMessage(), $exception->getCode(), $exception);
         }
@@ -202,8 +203,29 @@ class Uri implements UriInterface
         return (string) $this->uri;
     }
 
+    /**
+     * @return string
+     */
+    public function toString(): string
+    {
+        return $this->uri->toString();
+    }
+
+    /**
+     * @return string
+     */
     public function jsonSerialize(): string
     {
         return $this->uri->jsonSerialize();
+    }
+
+    /**
+     * @deprecated see {@link BaseUri::getComponents()}
+     * @return array
+     */
+    public function getComponents(): array
+    {
+        /** @noinspection PhpDeprecationInspection */
+        return $this->uri->getComponents();
     }
 }
