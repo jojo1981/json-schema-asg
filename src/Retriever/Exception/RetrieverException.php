@@ -29,7 +29,7 @@ class RetrieverException extends RuntimeException
      */
     public static function notExistingUri(UriInterface $uri): RetrieverException
     {
-        return new static(sprintf('Could not get data from uri: %s', $uri));
+        return new self(sprintf('Could not get data from uri: %s', $uri));
     }
 
     /**
@@ -39,7 +39,7 @@ class RetrieverException extends RuntimeException
      */
     public static function couldNotParseYamlContent(UriInterface $uri, Exception $previous): RetrieverException
     {
-        return new static(sprintf('Could not parse yaml content for uri: %s', $uri), 0, $previous);
+        return new self(sprintf('Could not parse yaml content for uri: %s', $uri), 0, $previous);
     }
 
     /**
@@ -54,7 +54,7 @@ class RetrieverException extends RuntimeException
         int $jsonErrorCode
     ): RetrieverException
     {
-        return new static(
+        return new self(
             sprintf(
                 'Could not parse json content for uri: `%s`. Parse error: `%s`[%d] given',
                 $uri,

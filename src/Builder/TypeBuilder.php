@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Jojo1981\JsonSchemaAsg\Builder;
 
 use InvalidArgumentException;
-use Jojo1981\JsonSchemaAsg\Asg\ObjectSchemaNode;
 use Jojo1981\JsonSchemaAsg\Asg\SimpleTypeNode;
 use Jojo1981\JsonSchemaAsg\Asg\SimpleTypesSequenceNode;
 use Jojo1981\JsonSchemaAsg\Helper\ArrayHelper;

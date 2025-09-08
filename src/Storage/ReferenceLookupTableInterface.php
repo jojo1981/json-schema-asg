@@ -38,7 +38,7 @@ interface ReferenceLookupTableInterface
     public function push(Reference $reference): void;
 
     /**
-     * Pop the last reference from the stack. Throws an logic exception when the stack is empty.
+     * Pop the last reference from the stack. Throws a logic exception when the stack is empty.
      *
      * @throws LogicException
      * @return Reference
@@ -76,7 +76,7 @@ interface ReferenceLookupTableInterface
     /**
      * Checks if the passed reference fits in one of the references on the stack.
      * When it fits in from the start then it's a circular reference.
-     * The reference must be have an uri with an absolute path in it.
+     * The reference must have an uri with an absolute path in it.
      * Throws an invalid argument exception when the reference is not valid.
      *
      * @param Reference $reference

@@ -52,7 +52,7 @@ class BuilderRegistry implements BuilderInterface
     public const WILDCARD_SYMBOL = '*';
 
     /** @var BuilderInterface[] */
-    private $builders = [];
+    private array $builders = [];
 
     /**
      * @param BuilderInterface[] $builders
@@ -99,7 +99,7 @@ class BuilderRegistry implements BuilderInterface
      * @param string $key
      * @throws LogicException
      */
-    public function removeBuilderForKey(string $key)
+    public function removeBuilderForKey(string $key): void
     {
         if (!$this->hasBuilderForKey($key)) {
             throw new LogicException(sprintf(

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Jojo1981\JsonSchemaAsg\Storage\Exception;
 
-use Jojo1981\JsonSchemaAsg\Value\Reference;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
+use Jojo1981\JsonSchemaAsg\Value\Reference;
 use LogicException;
 use function sprintf;
 
@@ -30,7 +30,7 @@ class StorageException extends LogicException
      */
     public static function alreadyExistsForUriException(UriInterface $uri): StorageException
     {
-        return new self(sprintf('Already stored a schema for file: %s', (string) $uri));
+        return new self(sprintf('Already stored a schema for file: %s', $uri));
     }
 
     /**

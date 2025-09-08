@@ -13,7 +13,6 @@ namespace Jojo1981\JsonSchemaAsg\Helper;
 
 use Jojo1981\JsonSchemaAsg\Uri\Uri;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
-use League\Uri\Uri as BaseUri;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Helper
@@ -34,6 +33,6 @@ final class UriHelper
      */
     public static function createFromString(string $uri = ''): UriInterface
     {
-        return new Uri(BaseUri::createFromString($uri));
+        return new Uri($uri);
     }
 }

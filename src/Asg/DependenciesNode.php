@@ -20,10 +20,7 @@ use function array_walk;
  */
 class DependenciesNode implements NodeInterface, VisitableInterface
 {
-    /** @var ObjectSchemaNode */
-    private ObjectSchemaNode $parent;
-
-    /** @var DependenciesNode[] */
+    /** @var DependencyNode[] */
     private array $dependencyNodes = [];
 
     /**

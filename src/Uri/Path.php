@@ -13,13 +13,12 @@ namespace Jojo1981\JsonSchemaAsg\Uri;
 
 use Jojo1981\JsonSchemaAsg\Uri\Exception\PathException;
 use League\Uri\Components\Path as BasePath;
-use League\Uri\Contracts\UriComponentInterface;
 use Throwable;
 
 /**
  * @package Jojo1981\JsonSchemaAsg\Uri
  */
-class Path implements PathInterface
+final class Path implements PathInterface
 {
     /** @var BasePath */
     private BasePath $path;
@@ -29,15 +28,7 @@ class Path implements PathInterface
      */
     public function __construct(string $path = '')
     {
-        $this->path = new BasePath($path);
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getContent(): ?string
-    {
-        return $this->path->getContent();
+        $this->path = BasePath::new($path);
     }
 
     /**
@@ -70,20 +61,6 @@ class Path implements PathInterface
     public function hasTrailingSlash(): bool
     {
         return $this->path->hasTrailingSlash();
-    }
-
-    /**
-     * @param string|null $content
-     * @return UriComponentInterface
-     * @throws PathException
-     */
-    public function withContent(?string $content): UriComponentInterface
-    {
-        try {
-            return $this->path->withContent($content);
-        } catch (Throwable $exception) {
-            throw new PathException($exception->getMessage(), $exception->getCode(), $exception);
-        }
     }
 
     /**
@@ -172,6 +149,14 @@ class Path implements PathInterface
      */
     public function __toString(): string
     {
-        return $this->path->__toString();
+        return (string) $this->path;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function value(): ?string
+    {
+        return $this->path->value();
     }
 }

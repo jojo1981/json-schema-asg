@@ -28,7 +28,7 @@ class PreProcessException extends RuntimeException
      */
     public static function invalidIdValueTypeFound(): PreProcessException
     {
-        return new static('Expect value of `$id` to be of type string');
+        return new self('Expect value of `$id` to be of type string');
     }
 
     /**
@@ -36,7 +36,7 @@ class PreProcessException extends RuntimeException
      */
     public static function invalidRefValueTypeFound(): PreProcessException
     {
-        return new static('Expect value of `$ref` to be of type string');
+        return new self('Expect value of `$ref` to be of type string');
     }
 
     /**
@@ -56,19 +56,7 @@ class PreProcessException extends RuntimeException
             $message .= PHP_EOL . $previous->getMessage();
         }
 
-        return new static($message, 0, $previous);
-    }
-
-    /**
-     * @param string $typeFound
-     * @return PreProcessException
-     */
-    public static function invalidSchemaDataFound(string $typeFound): PreProcessException
-    {
-        return new static(sprintf(
-            'Expect schema data to be of type boolean, array or nested array and not to be of type: %s',
-            $typeFound
-        ));
+        return new self($message, 0, $previous);
     }
 
     /**
@@ -77,7 +65,7 @@ class PreProcessException extends RuntimeException
      */
     public static function invalidUriPassed(UriInterface $uri): PreProcessException
     {
-        return new static(sprintf('Expect uri to contain an absolute path. Passed uri: %s', $uri));
+        return new self(sprintf('Expect uri to contain an absolute path. Passed uri: %s', $uri));
     }
 
     /**
@@ -86,7 +74,7 @@ class PreProcessException extends RuntimeException
      */
     public static function invalidRefValueWhichPointToNoExistingIdentifierFound(string $value): PreProcessException
     {
-        return new static(sprintf(
+        return new self(sprintf(
             'Invalid `$ref` value found. Identifier with value: %s not found in schema',
             $value
         ));

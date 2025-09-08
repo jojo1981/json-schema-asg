@@ -16,14 +16,13 @@ use Jojo1981\JsonSchemaAsg\Helper\PathHelper;
 use Jojo1981\JsonSchemaAsg\Helper\ReferenceHelper;
 use Jojo1981\JsonSchemaAsg\Helper\UriHelper;
 use Jojo1981\JsonSchemaAsg\PreProcessor\Exception\PreProcessException;
+use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
 use Jojo1981\JsonSchemaAsg\Value\JsonKeys;
 use Jojo1981\JsonSchemaAsg\Value\Reference;
-use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
 use LogicException;
 use stdClass;
 use UnexpectedValueException;
 use function array_key_exists;
-use function gettype;
 use function is_array;
 use function is_bool;
 use function is_string;
@@ -51,7 +50,7 @@ class SchemaDataPreprocessor implements SchemaDataPreprocessorInterface
      * Preprocess the schema data and returned the updated schema data.
      *
      * @param UriInterface $uri
-     * @param array|bool|array[] $schemaData
+     * @param array<string, mixed>|bool $schemaData
      * @return bool|array|array[]
      * @throws InvalidArgumentException
      * @throws LogicException
@@ -60,7 +59,7 @@ class SchemaDataPreprocessor implements SchemaDataPreprocessorInterface
      */
     public function preProcess(UriInterface $uri, array|bool $schemaData): array|bool
     {
-        $this->assertUriAndSchemaData($uri, $schemaData);
+        $this->assertUri($uri);
         if (is_bool($schemaData)) {
             return $schemaData;
         }
@@ -75,7 +74,7 @@ class SchemaDataPreprocessor implements SchemaDataPreprocessorInterface
      * Process the schema data recursively and return the updated schema data
      *
      * @param string $id
-     * @param array $schemaData
+     * @param array<string, mixed> $schemaData
      * @param array $index
      * @return array
      * @throws InvalidArgumentException
@@ -177,7 +176,7 @@ class SchemaDataPreprocessor implements SchemaDataPreprocessorInterface
      * index of all found values and build a map with the identifier value as key and the value has the corresponding
      * local json reference (a reference which only contains a json pointer)
      *
-     * @param array[] $schemaData
+     * @param array<string, mixed> $schemaData
      * @param string[] $index
      * @param string $path
      * @return string[]
@@ -210,15 +209,11 @@ class SchemaDataPreprocessor implements SchemaDataPreprocessorInterface
 
     /**
      * @param UriInterface $uri
-     * @param array|bool|array[] $schemaData
      * @return void
      * @throws PreProcessException
      */
-    private function assertUriAndSchemaData(UriInterface $uri, array|bool $schemaData): void
+    private function assertUri(UriInterface $uri): void
     {
-        if (!is_bool($schemaData) && !is_array($schemaData)) {
-            throw PreProcessException::invalidSchemaDataFound(gettype($schemaData));
-        }
         if (!PathHelper::isAbsolute($uri->getPath())) {
             throw PreProcessException::invalidUriPassed($uri);
         }
