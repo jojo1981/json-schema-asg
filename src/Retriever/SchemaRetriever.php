@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Jojo1981\JsonSchemaAsg\Retriever;
 
 use Exception;
+use Jojo1981\JsonSchemaAsg\Facade\YamlParser;
 use Jojo1981\JsonSchemaAsg\Retriever\Exception\RetrieverException;
 use Jojo1981\JsonSchemaAsg\Uri\UriInterface;
-use Symfony\Component\Yaml\Yaml;
 use function file_get_contents;
 use function in_array;
 use function json_decode;
@@ -24,13 +24,25 @@ use function pathinfo;
 
 /**
  * This schema retriever can handle retrieving schemas on the local filesystem and on the network/internet. Also, it can
- * parse json schema content defined in json syntax or yaml syntax. Only file names with the extension .yml or .yaml will
- * be parsed as yaml content
+ * parse JSON schema content defined in JSON syntax or YAML syntax. Only file names with the extension .yml or .yaml will
+ * be parsed as YAML content
  *
  * @package Jojo1981\JsonSchemaAsg\Retriever
  */
 class SchemaRetriever implements SchemaRetrieverInterface
 {
+    /** @var YamlParser */
+    private YamlParser $yamlParser;
+
+    /**
+     * @param YamlParser $yamlParser
+     */
+    public function __construct(YamlParser $yamlParser)
+    {
+        $this->yamlParser = $yamlParser;
+    }
+
+
     /**
      * @param UriInterface $uri
      * @throws RetrieverException
@@ -84,7 +96,7 @@ class SchemaRetriever implements SchemaRetrieverInterface
     private function parseYamlContent(UriInterface $uri, string $content): array|bool
     {
         try {
-            return Yaml::parse($content);
+            return $this->yamlParser->parseYaml($content);
         } catch (Exception $exception) {
             throw RetrieverException::couldNotParseYamlContent($uri, $exception);
         }

@@ -1,5 +1,7 @@
 /bin
+/build
 /var
 /vendor
 composer.lock
 phpunit.xml
+.phpunit.result.cache

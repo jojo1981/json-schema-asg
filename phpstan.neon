@@ -1,2 +1,5 @@
 parameters:
   treatPhpDocTypesAsCertain: false
+  reportUnmatchedIgnoredErrors: false
+  ignoreErrors:
+    - '#Parameter \#2 \$flags of static method Symfony\\Component\\Yaml\\Yaml::parse\(\) expects .*, int given#'

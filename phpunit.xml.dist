@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12/phpunit.xsd"
+         colors="true"
+         bootstrap="tests/bootstrap.php"
+>
+
+    <testsuites>
+        <testsuite name="Json schema abstract semantic graph builder - Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+
+    <coverage>
+        <report>
+            <clover outputFile="build/clover.xml"/>
+            <html outputDirectory="build/coverage"/>
+        </report>
+    </coverage>
+
+    <logging>
+        <junit outputFile="build/junit-report.xml"/>
+        <teamcity outputFile="build/teamcity-report.txt"/>
+        <testdoxHtml outputFile="build/html-report.html"/>
+        <testdoxText outputFile="build/dox-report.txt"/>
+    </logging>
+
+</phpunit>
