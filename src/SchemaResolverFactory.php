@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Jojo1981\JsonSchemaAsg;
 
 use Jojo1981\JsonSchemaAsg\Exception\JsonSchemaAsgException;
+use Jojo1981\JsonSchemaAsg\Facade\YamlParser;
 use Jojo1981\JsonSchemaAsg\PreProcessor\SchemaDataPreprocessor;
 use Jojo1981\JsonSchemaAsg\PreProcessor\SchemaDataPreprocessorInterface;
 use Jojo1981\JsonSchemaAsg\Retriever\FileStorageSchemaRetrieverDecorator;
@@ -174,7 +175,7 @@ class SchemaResolverFactory
         $this->frozen = true;
 
         if (!$this->schemaRetriever) {
-            $this->schemaRetriever = new SchemaRetriever();
+            $this->schemaRetriever = new SchemaRetriever(new YamlParser());
         }
 
         return new FileStorageSchemaRetrieverDecorator(

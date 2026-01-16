@@ -153,9 +153,9 @@ final class Path implements PathInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function value(): ?string
+    public function value(): string
     {
         return $this->path->value();
     }

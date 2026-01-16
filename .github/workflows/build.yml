@@ -17,7 +17,57 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [ "8.1", "8.2", "8.3", "8.4" ]
+        include:
+
+          # PHP 8.1
+          - php-version: "8.1"
+            symfony-yaml-version: "^4.0"
+          - php-version: "8.1"
+            symfony-yaml-version: "^5.0"
+          - php-version: "8.1"
+            symfony-yaml-version: "^6.0"
+
+          # PHP 8.2
+          - php-version: "8.2"
+            symfony-yaml-version: "^4.0"
+          - php-version: "8.2"
+            symfony-yaml-version: "^5.0"
+          - php-version: "8.2"
+            symfony-yaml-version: "^6.0"
+
+          # PHP 8.3
+          - php-version: "8.3"
+            symfony-yaml-version: "^4.0"
+          - php-version: "8.3"
+            symfony-yaml-version: "^5.0"
+          - php-version: "8.3"
+            symfony-yaml-version: "^6.0"
+          - php-version: "8.3"
+            symfony-yaml-version: "^7.0"
+
+          # PHP 8.4
+          - php-version: "8.4"
+            symfony-yaml-version: "^4.0"
+          - php-version: "8.4"
+            symfony-yaml-version: "^5.0"
+          - php-version: "8.4"
+            symfony-yaml-version: "^6.0"
+          - php-version: "8.4"
+            symfony-yaml-version: "^7.0"
+          - php-version: "8.4"
+            symfony-yaml-version: "^8.0"
+
+          # PHP 8.5
+          - php-version: "8.5"
+            symfony-yaml-version: "^4.0"
+          - php-version: "8.5"
+            symfony-yaml-version: "^5.0"
+          - php-version: "8.5"
+            symfony-yaml-version: "^6.0"
+          - php-version: "8.5"
+            symfony-yaml-version: "^7.0"
+          - php-version: "8.5"
+            symfony-yaml-version: "^8.0"
 
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +92,9 @@ jobs:
             ${{ runner.os }}-php-${{ matrix.php-version }}-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: |
+          composer require symfony/yaml:${{ matrix.symfony-yaml-version }} --no-update
+          composer install --prefer-dist --no-progress
 
       - name: Lint PHP files
         run: |
@@ -54,3 +106,6 @@ jobs:
         run: |
           composer global require phpstan/phpstan
           phpstan analyse src --level=5
+
+      - name: Run test suite
+        run: composer run-script test
